@@ -29,6 +29,8 @@ import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyRecyclerScroll;
 import br.com.v8developmentstudio.minhabibliacatolica.dao.PersistenceDao;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Capitulo;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Livro;
+import br.com.v8developmentstudio.minhabibliacatolica.vo.RelacLivroCap;
+import br.com.v8developmentstudio.minhabibliacatolica.vo.Versiculo;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         // Instancia as Variaveis
-        String itemsData[] = getResources().getStringArray(R.array.CapGen1);
+
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         final FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
         final FloatingActionButton fab3 = (FloatingActionButton) findViewById(R.id.fab3);
@@ -65,9 +67,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         expandableList = (ExpandableListView) findViewById(R.id.lvExp);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-
         PersistenceDao persistenceDao = new PersistenceDao(this);
         persistenceDao.copiaBanco(PersistenceDao.DATABASE_NAME);
+
         List<Livro> livroList = persistenceDao.getLivros(persistenceDao.openDB());
         livroArrayList.addAll(livroList);
         setGroupParents(livroArrayList);
@@ -78,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         expandableList.setChildDivider(getResources().getDrawable(R.color.background_material_dark));
         expandableList.setAdapter(adapter);
 
+        //Instancio a Primeira pagina
+        String itemsData[] = recuperaVersiculosSelecionados(1, 1);
         createView(recyclerView, itemsData);
 
 
@@ -110,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
                 View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
                 if (child != null && mGestureDetector.onTouchEvent(e)) {
-                    Toast.makeText(MainActivity.this,""+ recyclerView.getChildPosition(child), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this,"Versiculo "+ 1+recyclerView.getChildPosition(child), Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 return false;
@@ -172,6 +176,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setClickable(true);
     }
 
+
+    private String[] recuperaVersiculosSelecionados(final int idLivroSelecionado,final int idCapituloSelecionado){
+        PersistenceDao persistenceDao = new PersistenceDao(this);
+        RelacLivroCap relacLivroCap = persistenceDao.getRelacLivroCap(persistenceDao.openDB(), idLivroSelecionado, idCapituloSelecionado);
+        List<Versiculo>  versiculoList =  persistenceDao.getCapitulos(persistenceDao.openDB(), relacLivroCap.getNome_tabela());
+        String[] array = new String[versiculoList.size()];
+        for (int i=0;i < versiculoList.size();i++){
+            array[i] = (i+1)+": "+ versiculoList.get(i).getTexto();
+        }
+        return array;
+
+    }
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {

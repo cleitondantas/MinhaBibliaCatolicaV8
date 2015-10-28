@@ -261,4 +261,24 @@ public class PersistenceDao extends SQLiteOpenHelper{
         }
     }
 
+    // Método para criacao de tabelas
+    public void criatabelas(SQLiteDatabase bancoDados){
+
+        cursor = bancoDados.query(TABLE_RELAC_LIVRO_CAP, null,null,null,null,null,null);
+        List<RelacLivroCap> relacLivroCapList = new ArrayList<>();
+        RelacLivroCap relacLivroCap =null;
+        while(cursor.moveToNext()){
+            relacLivroCap = new RelacLivroCap();
+            relacLivroCap.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
+            relacLivroCap.setNome_tabela(cursor.getString(cursor.getColumnIndex(COLUMN_NOME_TABELA)));
+            relacLivroCapList.add(relacLivroCap);
+        }
+        for (RelacLivroCap cp:relacLivroCapList){
+            bancoDados.execSQL("CREATE TABLE IF NOT EXISTS "+cp.getNome_tabela() + " ( ID  INTEGER PRIMARY KEY,VER TEXT );");
+        }
+
+        bancoDados.close();
+
+    }
+
 }
