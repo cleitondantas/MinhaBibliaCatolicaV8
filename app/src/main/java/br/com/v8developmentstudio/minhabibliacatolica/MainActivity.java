@@ -108,10 +108,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                View child = rv.findChildViewUnder(e.getX(), e.getY());
+                View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
                 if (child != null && mGestureDetector.onTouchEvent(e)) {
-
-                    Toast.makeText(MainActivity.this, recyclerView.getChildPosition(child), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this,""+ recyclerView.getChildPosition(child), Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 return false;
@@ -155,8 +154,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             capitulos = new ArrayList<>();
             for (int i = 0; i < livroArrayList.get(c).getQtdCapitulos(); i++) {
                 capitulo = new Capitulo();
+                capitulo.setId(i);
                 capitulo.setTitulo("Capitulo " + (i + 1));
                 capitulos.add(capitulo);
+
             }
             livroArrayList.get(c).setCapituloList(capitulos);
         }

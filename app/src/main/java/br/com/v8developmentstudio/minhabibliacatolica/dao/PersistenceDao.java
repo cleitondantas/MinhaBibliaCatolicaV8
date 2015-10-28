@@ -16,26 +16,28 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Livro;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.RelacLivroCap;
+import br.com.v8developmentstudio.minhabibliacatolica.vo.Versiculo;
 
 
 public class PersistenceDao extends SQLiteOpenHelper{
     public static final String DATABASE_NAME = "DB_MINHABIBLIACATOLICAV8";
-    private static final String COLUMN_ID = "id";
+    private static final String COLUMN_ID = "ID";
 
     private static final String TABLE_LIVROS = "LIVROS";
-    private static final String COLUMN_TITULO_LIVRO = "titulolivro";
-    private static final String COLUMN_ABREVIACAO = "abreviacao";
-    private static final String COLUMN_QTDCAPITULOS = "qtdcapitulos";
+    private static final String COLUMN_TITULO_LIVRO = "TITULOLIVRO";
+    private static final String COLUMN_ABREVIACAO = "ABREVIACAO";
+    private static final String COLUMN_QTDCAPITULOS = "QTDCAPITULOS";
 
     private static final String TABLE_RELAC_LIVRO_CAP = "TB_RELAC_LIVRO_CAP";
     private static final String COLUMN_IDLIVRO = "IDLIVRO";
     private static final String COLUMN_IDNUMCAP = "IDNUMCAP";
     private static final String COLUMN_NOME_TABELA = "NOME_TABELA";
+
+    private static final String COLUMN_VERSICULO = "VER";
 
     private static final String TABLE_FAVORITOS = "FAVORITOS";
     private static final String COLUMN_IDORACAO = "IDORACAO";
@@ -72,20 +74,21 @@ public class PersistenceDao extends SQLiteOpenHelper{
 
     /**
      */
-    public List<RelacLivroCap> getRelacLivroCap(SQLiteDatabase bancoDados,int idLivro,int idNumCap){
-        ArrayList<RelacLivroCap> relacLivroCapArrayList = new ArrayList<>();
-        cursor = bancoDados.query(TABLE_RELAC_LIVRO_CAP, new String[]{COLUMN_ID,COLUMN_IDLIVRO,COLUMN_IDNUMCAP,COLUMN_NOME_TABELA}, COLUMN_IDLIVRO+" = "+idLivro +"AND"+COLUMN_IDNUMCAP +" = "+idNumCap,null,null,null,null);
+    public RelacLivroCap getRelacLivroCap(SQLiteDatabase bancoDados,int idLivro,int idNumCap){
+        String query =  COLUMN_IDLIVRO+" = ? AND "+COLUMN_IDNUMCAP +" = ?";
+        String[] args = {""+idLivro,""+idNumCap};
+        cursor = bancoDados.query(TABLE_RELAC_LIVRO_CAP, new String[]{COLUMN_ID,COLUMN_IDLIVRO,COLUMN_IDNUMCAP,COLUMN_NOME_TABELA},query,args,null,null,null);
         RelacLivroCap relacLivroCap =null;
         while(cursor.moveToNext()){
             relacLivroCap = new RelacLivroCap();
             relacLivroCap.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
-            relacLivroCap.setIdLivro(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_IDLIVRO))));
-            relacLivroCap.setIdNumCap(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_IDNUMCAP))));
+            relacLivroCap.setIdLivro(idLivro);
+            relacLivroCap.setIdNumCap(idNumCap);
             relacLivroCap.setNome_tabela(cursor.getString(cursor.getColumnIndex(COLUMN_NOME_TABELA)));
-            relacLivroCapArrayList.add(relacLivroCap);
+            break;
         }
         bancoDados.close();
-        return relacLivroCapArrayList;
+        return relacLivroCap;
     }
 
 
@@ -94,7 +97,6 @@ public class PersistenceDao extends SQLiteOpenHelper{
      */
     public List<Livro> getLivros(SQLiteDatabase bancoDados){
         ArrayList<Livro> livroArrayList = new ArrayList<>();
-        Log.d("IsDB",""+ bancoDados.isOpen());
         cursor = bancoDados.query(TABLE_LIVROS, new String[]{COLUMN_ID,COLUMN_TITULO_LIVRO,COLUMN_QTDCAPITULOS,COLUMN_ABREVIACAO}, null,null,null,null,null);
         Livro livro;
         while(cursor.moveToNext()){
@@ -112,20 +114,18 @@ public class PersistenceDao extends SQLiteOpenHelper{
     /**
      * Metodo Busca os titulos e Lista para ler na view
      */
-    public List<Livro> getCapitulos(SQLiteDatabase bancoDados,String TABLE_CAPITULOS){
-        ArrayList<Livro> livroArrayList = new ArrayList<>();
-        cursor = bancoDados.query(TABLE_LIVROS, new String[]{COLUMN_ID,COLUMN_TITULO_LIVRO,COLUMN_QTDCAPITULOS,COLUMN_ABREVIACAO}, null,null,null,null,null);
-        Livro livro =null;
+    public List<Versiculo> getCapitulos(SQLiteDatabase bancoDados,String TABLE_CAPITULO){
+        ArrayList<Versiculo> versiculoArrayList = new ArrayList<>();
+        cursor = bancoDados.query(TABLE_CAPITULO, new String[]{COLUMN_ID,COLUMN_VERSICULO}, null,null,null,null,null);
+        Versiculo versiculo =null;
         while(cursor.moveToNext()){
-            livro = new Livro();
-            livro.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
-            livro.setTituloLivro(cursor.getString(cursor.getColumnIndex(COLUMN_TITULO_LIVRO)));
-            livro.setAbreviacao(cursor.getString(cursor.getColumnIndex(COLUMN_ABREVIACAO)));
-            livro.setQtdCapitulos(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_QTDCAPITULOS))));
-            livroArrayList.add(livro);
+            versiculo = new Versiculo();
+            versiculo.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
+            versiculo.setTexto(cursor.getString(cursor.getColumnIndex(COLUMN_VERSICULO)));
+            versiculoArrayList.add(versiculo);
         }
         bancoDados.close();
-        return livroArrayList;
+        return versiculoArrayList;
     }
 
 

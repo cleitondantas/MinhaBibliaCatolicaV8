@@ -9,14 +9,19 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckedTextView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import br.com.v8developmentstudio.minhabibliacatolica.MainActivity;
 import br.com.v8developmentstudio.minhabibliacatolica.R;
+import br.com.v8developmentstudio.minhabibliacatolica.dao.PersistenceDao;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Capitulo;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Livro;
+import br.com.v8developmentstudio.minhabibliacatolica.vo.RelacLivroCap;
+import br.com.v8developmentstudio.minhabibliacatolica.vo.Versiculo;
 
 public class MyExpandableAdapter extends BaseExpandableListAdapter {
 
@@ -26,10 +31,13 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
     private List<Capitulo> childCapitulos;
     private MainActivity mainActivity;
     private TextView textView = null;
+    private PersistenceDao persistenceDao;
+    private int idLivro,idCapitulo;
 
     public MyExpandableAdapter(ArrayList<Livro> livros, MainActivity mainActivity) {
         this.livroArrayList = livros;
         this.mainActivity = mainActivity;
+        persistenceDao = new PersistenceDao(mainActivity);
     }
 
 
@@ -39,10 +47,10 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
         childCapitulos = livroArrayList.get(groupPosition).getCapituloList();
-
+        idLivro = livroArrayList.get(groupPosition).getId();
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.group, null);
         }
@@ -53,8 +61,9 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
         convertView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                //  Toast.makeText(activity, childCapitulos.get(childPosition).getTitulo(), Toast.LENGTH_SHORT).show();
-                String itemsData[] = activity.getResources().getStringArray(R.array.CapGen2);
+                Toast.makeText(activity, childCapitulos.get(childPosition).getTitulo(), Toast.LENGTH_SHORT).show();
+                idCapitulo = childCapitulos.get(childPosition).getId()+1;
+                String itemsData[] = recuperaVersiculosSelecionados(idLivro, idCapitulo);
                 mainActivity.createView(mainActivity.getRecyclerView(), itemsData);
                 mainActivity.getDrawer().closeDrawers();
             }
@@ -75,6 +84,17 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
 
         return convertView;
     }
+    private String[] recuperaVersiculosSelecionados(final int idLivroSelecionado,final int idCapituloSelecionado){
+        RelacLivroCap relacLivroCap = persistenceDao.getRelacLivroCap(persistenceDao.openDB(), idLivroSelecionado, idCapituloSelecionado);
+        List<Versiculo>  versiculoList =  persistenceDao.getCapitulos(persistenceDao.openDB(), relacLivroCap.getNome_tabela());
+        String[] array = new String[versiculoList.size()];
+        for (int i=0;i < versiculoList.size();i++){
+            array[i] = (i+1)+": "+ versiculoList.get(i).getTexto();
+        }
+    return array;
+
+    }
+
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {

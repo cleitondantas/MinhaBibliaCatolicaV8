@@ -22,4 +22,9 @@ public class Versiculo {
     public void setTexto(String texto) {
         this.texto = texto;
     }
+
+    @Override
+    public String toString() {
+        return texto.toString();
+    }
 }
