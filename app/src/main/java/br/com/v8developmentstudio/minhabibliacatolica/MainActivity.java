@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
                 View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
                 if (child != null && mGestureDetector.onTouchEvent(e)) {
-                    Toast.makeText(MainActivity.this,"Versiculo "+ 1+recyclerView.getChildPosition(child), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this,"Versiculo "+ (1+recyclerView.getChildPosition(child)), Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 return false;
