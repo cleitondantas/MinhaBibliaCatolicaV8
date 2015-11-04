@@ -12,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import br.com.v8developmentstudio.minhabibliacatolica.MainActivity;
@@ -33,6 +32,7 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
     private TextView textView = null;
     private PersistenceDao persistenceDao;
     private int idLivro,idCapitulo;
+
 
     public MyExpandableAdapter(ArrayList<Livro> livros, MainActivity mainActivity) {
         this.livroArrayList = livros;
@@ -61,11 +61,14 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
         convertView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(activity, childCapitulos.get(childPosition).getTitulo(), Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(activity,livroArrayList.get(groupPosition).getTituloLivro() +" "+ childCapitulos.get(childPosition).getTitulo(), Toast.LENGTH_SHORT).show();
+
                 idCapitulo = childCapitulos.get(childPosition).getId()+1;
                 String itemsData[] = recuperaVersiculosSelecionados(idLivro, idCapitulo);
                 mainActivity.createView(mainActivity.getRecyclerView(), itemsData);
                 mainActivity.getDrawer().closeDrawers();
+                activity.setTitle(livroArrayList.get(groupPosition).getAbreviacao() +" "+ childCapitulos.get(childPosition).getTitulo());
             }
         });
 
