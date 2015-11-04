@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
         // Instancia as Variaveis
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
