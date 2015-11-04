@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private ArrayList<Livro> livroArrayList = new ArrayList<>();
     private ArrayList<Object> childItems = new ArrayList<>();
-    private int[] qdtCapitulos;
+
 
     private RecyclerView recyclerView;
     private ExpandableListView expandableList;
@@ -67,8 +67,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         PersistenceDao persistenceDao = new PersistenceDao(this);
-        persistenceDao.copiaBanco(PersistenceDao.DATABASE_NAME);
-
+       // persistenceDao.getDeleteBase(PersistenceDao.DATABASE_NAME);
+        if(!persistenceDao.getExiteBase(PersistenceDao.DATABASE_NAME)) {
+            persistenceDao.openDB();
+            persistenceDao.copiaBanco(PersistenceDao.DATABASE_NAME);
+        }
         List<Livro> livroList = persistenceDao.getLivros(persistenceDao.openDB());
         livroArrayList.addAll(livroList);
         setGroupParents(livroArrayList);
@@ -80,9 +83,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         expandableList.setAdapter(adapter);
 
         //Instancio a Primeira pagina
-        String itemsData[] = recuperaVersiculosSelecionados(1, 1);
+        int idLivro = persistenceDao.getEstadoLivroPreferences();
+        int idCapitulo = persistenceDao.getEstadoCapituloPreferences();
+        String itemsData[] = recuperaVersiculosSelecionados(idLivro,idCapitulo);
         createView(recyclerView, itemsData);
-
 
         recyclerView.setOnScrollListener(new MyRecyclerScroll() {
             @Override
@@ -113,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
                 View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
                 if (child != null && mGestureDetector.onTouchEvent(e)) {
-                    Toast.makeText(MainActivity.this,"Versiculo "+ (1+recyclerView.getChildPosition(child)), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this,"Versículo "+ (1+recyclerView.getChildPosition(child)), Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 return false;
@@ -179,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String[] recuperaVersiculosSelecionados(final int idLivroSelecionado,final int idCapituloSelecionado){
         PersistenceDao persistenceDao = new PersistenceDao(this);
         RelacLivroCap relacLivroCap = persistenceDao.getRelacLivroCap(persistenceDao.openDB(), idLivroSelecionado, idCapituloSelecionado);
+
         List<Versiculo>  versiculoList =  persistenceDao.getCapitulos(persistenceDao.openDB(), relacLivroCap.getNome_tabela());
         String[] array = new String[versiculoList.size()];
         for (int i=0;i < versiculoList.size();i++){

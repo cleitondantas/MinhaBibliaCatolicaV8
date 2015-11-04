@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -50,7 +51,6 @@ public class PersistenceDao extends SQLiteOpenHelper{
     private static Context contextStatic;
     public PersistenceDao(Context context) {
         super(context, DATABASE_NAME, null, VERSAO);
-        openDB(context);
         contextStatic =context;
     }
     public static PersistenceDao getInstance(Context context) {
@@ -261,6 +261,13 @@ public class PersistenceDao extends SQLiteOpenHelper{
         }
     }
 
+    public boolean getExiteBase(String dataBaseName){
+        return contextStatic.getDatabasePath(dataBaseName).exists();
+    }
+    public boolean getDeleteBase(String dataBaseName){
+        return contextStatic.getDatabasePath(dataBaseName).delete();
+    }
+
     // Método para criacao de tabelas
     public void criatabelas(SQLiteDatabase bancoDados){
 
@@ -279,6 +286,23 @@ public class PersistenceDao extends SQLiteOpenHelper{
 
         bancoDados.close();
 
+    }
+
+    public void salvarEstadoPreferences(int idLivro,int idCapitulo){
+        SharedPreferences settings = contextStatic.getSharedPreferences("Preferences", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt("idlivro", idLivro);
+        editor.putInt("idcapitulo", idCapitulo);
+        editor.commit();
+    }
+
+    public int getEstadoLivroPreferences(){
+        SharedPreferences settings = contextStatic.getSharedPreferences("Preferences", 0);
+        return settings.getInt("idlivro", 1);
+    }
+    public int getEstadoCapituloPreferences(){
+        SharedPreferences settings = contextStatic.getSharedPreferences("Preferences", 0);
+        return settings.getInt("idcapitulo", 1);
     }
 
 }
