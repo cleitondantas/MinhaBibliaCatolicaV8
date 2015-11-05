@@ -61,19 +61,15 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
         convertView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Toast.makeText(activity,livroArrayList.get(groupPosition).getTituloLivro() +" "+ childCapitulos.get(childPosition).getTitulo(), Toast.LENGTH_SHORT).show();
                 idCapitulo = childCapitulos.get(childPosition).getId()+1;
-                String itemsData[] = recuperaVersiculosSelecionados(idLivro, idCapitulo);
-
+                String itemsData[] =  mainActivity.recuperaVersiculosSelecionados(idLivro,idCapitulo);
                 persistenceDao.salvarEstadoPreferences(idLivro,idCapitulo);
-
                 mainActivity.createView(mainActivity.getRecyclerView(), itemsData);
                 mainActivity.getDrawer().closeDrawers();
                 activity.setTitle(livroArrayList.get(groupPosition).getAbreviacao() +" "+ childCapitulos.get(childPosition).getTitulo());
             }
         });
-
         return convertView;
     }
 
@@ -88,16 +84,6 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
         ((CheckedTextView) convertView).setChecked(isExpanded);
 
         return convertView;
-    }
-    private String[] recuperaVersiculosSelecionados(final int idLivroSelecionado,final int idCapituloSelecionado){
-        RelacLivroCap relacLivroCap = persistenceDao.getRelacLivroCap(persistenceDao.openDB(), idLivroSelecionado, idCapituloSelecionado);
-        List<Versiculo>  versiculoList =  persistenceDao.getCapitulos(persistenceDao.openDB(), relacLivroCap.getNome_tabela());
-        String[] array = new String[versiculoList.size()];
-        for (int i=0;i < versiculoList.size();i++){
-            array[i] = (i+1)+": "+ versiculoList.get(i).getTexto();
-        }
-    return array;
-
     }
 
 

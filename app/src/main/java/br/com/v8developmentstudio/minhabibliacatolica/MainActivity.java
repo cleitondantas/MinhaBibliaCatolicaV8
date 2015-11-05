@@ -36,14 +36,11 @@ import br.com.v8developmentstudio.minhabibliacatolica.vo.Versiculo;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ArrayList<Livro> livroArrayList = new ArrayList<>();
-    private ArrayList<Object> childItems = new ArrayList<>();
-
-
     private RecyclerView recyclerView;
     private ExpandableListView expandableList;
     private  MyExpandableAdapter adapter;
     private DrawerLayout drawer;
-
+    private PersistenceDao persistenceDao = new PersistenceDao(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         // Instancia as Variaveis
-
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         final FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
         final FloatingActionButton fab3 = (FloatingActionButton) findViewById(R.id.fab3);
@@ -62,11 +58,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab2.hide();
         fab3.hide();
         fab4.hide();
+
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         expandableList = (ExpandableListView) findViewById(R.id.lvExp);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        PersistenceDao persistenceDao = new PersistenceDao(this);
        // persistenceDao.getDeleteBase(PersistenceDao.DATABASE_NAME);
         if(!persistenceDao.getExiteBase(PersistenceDao.DATABASE_NAME)) {
             persistenceDao.openDB();
@@ -175,19 +171,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         MyAdapter mAdapter = new MyAdapter(itemsData);
         recyclerView.setAdapter(mAdapter);
+
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setClickable(true);
     }
 
 
-    private String[] recuperaVersiculosSelecionados(final int idLivroSelecionado,final int idCapituloSelecionado){
-        PersistenceDao persistenceDao = new PersistenceDao(this);
+    public String[] recuperaVersiculosSelecionados(final int idLivroSelecionado,final int idCapituloSelecionado){
+
+        setTitle(livroArrayList.get(idLivroSelecionado).getAbreviacao() + " " + ((livroArrayList.get(idLivroSelecionado)).getCapituloList()).get(idCapituloSelecionado).getTitulo());
+
         RelacLivroCap relacLivroCap = persistenceDao.getRelacLivroCap(persistenceDao.openDB(), idLivroSelecionado, idCapituloSelecionado);
 
         List<Versiculo>  versiculoList =  persistenceDao.getCapitulos(persistenceDao.openDB(), relacLivroCap.getNome_tabela());
         String[] array = new String[versiculoList.size()];
         for (int i=0;i < versiculoList.size();i++){
-            array[i] = (i+1)+": "+ versiculoList.get(i).getTexto();
+            array[i] = (i+1)+") "+ versiculoList.get(i).getTexto();
         }
         return array;
 
@@ -234,9 +233,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return recyclerView;
     }
 
-    public ExpandableListView getExpandableList() {
-        return expandableList;
-    }
+
 
     public DrawerLayout getDrawer() {
         return drawer;
