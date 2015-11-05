@@ -19,8 +19,6 @@ import br.com.v8developmentstudio.minhabibliacatolica.R;
 import br.com.v8developmentstudio.minhabibliacatolica.dao.PersistenceDao;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Capitulo;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Livro;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.RelacLivroCap;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.Versiculo;
 
 public class MyExpandableAdapter extends BaseExpandableListAdapter {
 
@@ -75,14 +73,11 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.row, null);
         }
-
         ((CheckedTextView) convertView).setText(livroArrayList.get(groupPosition).getTituloLivro());
         ((CheckedTextView) convertView).setChecked(isExpanded);
-
         return convertView;
     }
 

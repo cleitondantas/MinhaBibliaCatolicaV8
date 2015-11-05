@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private  MyExpandableAdapter adapter;
     private DrawerLayout drawer;
     private PersistenceDao persistenceDao = new PersistenceDao(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab4.hide();
 
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
         expandableList = (ExpandableListView) findViewById(R.id.lvExp);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -113,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
                 View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
                 if (child != null && mGestureDetector.onTouchEvent(e)) {
+
                     Toast.makeText(MainActivity.this,"Versículo "+ (1+recyclerView.getChildPosition(child)), Toast.LENGTH_SHORT).show();
                     return true;
                 }
