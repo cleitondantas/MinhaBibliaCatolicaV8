@@ -1,86 +1,13 @@
 <resources>
-    <string name="app_name">Minha Biblia Catolica</string>
+    <string name="app_name">Minha Biblia Católica</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
+    <string name="action_remove">Remove</string>
+    <string name="selected_count">%1$s selected</string>
     <string name="action_settings">Settings</string>
 
-    <string-array name="nomeCapitulos">
-        <item>Gênesis 	</item>
-        <item>Êxodo 	</item>
-        <item>Levítico 	</item>
-        <item>Números 	</item>
-        <item>Deuteronômio	</item>
-        <item>Josué 	</item>
-        <item>Juízes 	</item>
-        <item>Rute 	</item>
-        <item>I Samuel 	</item>
-        <item>II Samuel 	</item>
-        <item>I Reis 	</item>
-        <item>II Reis	</item>
-        <item>I Crônicas	</item>
-        <item>IICrônicas 	</item>
-        <item>Esdras	</item>
-        <item>Neemias 	</item>
-        <item>Tobias 	</item>
-        <item>Judite 	</item>
-        <item>Ester 	</item>
-        <item>I Macabeus 	</item>
-        <item>II Macabeus	</item>
-        <item>Jó 	</item>
-        <item>Salmos 	</item>
-        <item>Provérbios 	</item>
-        <item>Eclesiastes 	</item>
-        <item>Cântico dos Cânticos 	</item>
-        <item>Sabidoria 	</item>
-        <item>Eclesiástico	</item>
-        <item>Isaías 	</item>
-        <item>Jeremias 	</item>
-        <item>Lamentações 	</item>
-        <item>Baruc 	</item>
-        <item>Ezequiel 	</item>
-        <item>Daniel	</item>
-        <item>Oséias 	</item>
-        <item>Joel 	</item>
-        <item>Amós 	</item>
-        <item>Abdias 	</item>
-        <item>Jonas 	</item>
-        <item>Miquéias 	</item>
-        <item>Naum 	</item>
-        <item>Habacuc 	</item>
-        <item>Sofonias 	</item>
-        <item>Ageu 	</item>
-        <item>Zacarias	</item>
-        <item>Malaquias	</item>
-        <item>Evangelho segundo São Mateus</item>
-        <item>Evangelho segundo São Marcos</item>
-        <item>Evangelho segundo São Lucas</item>
-        <item>Evangelho segundo São João</item>
-        <item>Atos dos Apóstolos	</item>
-        <item>Romanos 	</item>
-        <item>I Coríntios 	</item>
-        <item>II Coríntios 	</item>
-        <item>Gálatas 	</item>
-        <item>Efésios 	</item>
-        <item>Filipenses 	</item>
-        <item>Colossenses 	</item>
-        <item>I Tessalonicenses 	</item>
-        <item>II Tessalonicenses 	</item>
-        <item>I Timóteo 	</item>
-        <item>II Timóteo 	</item>
-        <item>A Tito 	</item>
-        <item>A Filemon 	</item>
-        <item>Hebreus	</item>
-        <item>Epístola de São Tiago 	</item>
-        <item>Epístola I de São Pedro 	</item>
-        <item>Epístola II de São Pedro 	</item>
-        <item>Epístola I de São João 	</item>
-        <item>Epístola II de São João 	</item>
-        <item>Epístola III de São João 	</item>
-        <item>Epístola de São Judas 	</item>
-        <item>Apocalipse	</item>
-    </string-array>
+
 
 
 </resources>

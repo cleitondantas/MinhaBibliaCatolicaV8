@@ -3,16 +3,19 @@ package br.com.v8developmentstudio.minhabibliacatolica;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,13 +36,17 @@ import br.com.v8developmentstudio.minhabibliacatolica.vo.RelacLivroCap;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Versiculo;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener ,RecyclerView.OnItemTouchListener, View.OnClickListener,  ActionMode.Callback {
 
     private ArrayList<Livro> livroArrayList = new ArrayList<>();
     private RecyclerView recyclerView;
     private ExpandableListView expandableList;
-    private  MyExpandableAdapter adapter;
+    private MyExpandableAdapter MyExpandAdapter;
     private DrawerLayout drawer;
+    ActionMode actionMode;
+    GestureDetectorCompat gestureDetector;
+    private MyAdapter adapter =null;
     private PersistenceDao persistenceDao = new PersistenceDao(this);
 
     @Override
@@ -60,10 +67,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab3.hide();
         fab4.hide();
 
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        layoutManager.scrollToPosition(0);
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         expandableList = (ExpandableListView) findViewById(R.id.lvExp);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addOnItemTouchListener(this);
+        gestureDetector = new GestureDetectorCompat(this, new RecyclerViewOnGestureListener());
+
 
        // persistenceDao.getDeleteBase(PersistenceDao.DATABASE_NAME);
         if(!persistenceDao.getExiteBase(PersistenceDao.DATABASE_NAME)) {
@@ -74,17 +90,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         livroArrayList.addAll(livroList);
         setGroupParents(livroArrayList);
 
-        adapter = new MyExpandableAdapter(livroArrayList, this);
-        adapter.setInflater((android.view.LayoutInflater) this.getSystemService(android.content.Context.LAYOUT_INFLATER_SERVICE), this);
+        MyExpandAdapter = new MyExpandableAdapter(livroArrayList, this);
+        MyExpandAdapter.setInflater((android.view.LayoutInflater) this.getSystemService(android.content.Context.LAYOUT_INFLATER_SERVICE), this);
         expandableList.setDividerHeight(3);
         expandableList.setChildDivider(getResources().getDrawable(R.color.background_material_dark));
-        expandableList.setAdapter(adapter);
+        expandableList.setAdapter(MyExpandAdapter);
 
         //Instancio a Primeira pagina
         int idLivro = persistenceDao.getEstadoLivroPreferences();
         int idCapitulo = persistenceDao.getEstadoCapituloPreferences();
-        String itemsData[] = recuperaVersiculosSelecionados(idLivro,idCapitulo);
+        String itemsData[] = recuperaVersiculosSelecionados(idLivro, idCapitulo);
         createView(recyclerView, itemsData);
+
 
         recyclerView.setOnScrollListener(new MyRecyclerScroll() {
             @Override
@@ -103,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+/*        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             final GestureDetector mGestureDetector = new GestureDetector(MainActivity.this, new GestureDetector.SimpleOnGestureListener() {
                 @Override
                 public boolean onSingleTapUp(MotionEvent e) {
@@ -125,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onTouchEvent(RecyclerView rv, MotionEvent e) {
             }
-        });
+        });*/
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,7 +168,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
-
+    private void myToggleSelection(int idx) {
+        adapter.toggleSelection(idx);
+        String title = getString(R.string.selected_count, adapter.getSelectedItemCount());
+        setTitle(title);
+    }
     // Método que popula os dados
     public void setGroupParents(List<Livro> livroArrayList) {
         Capitulo capitulo;
@@ -172,8 +193,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // Cria a visualização da lista
     public void createView(RecyclerView recyclerView, String[] itemsData) {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        MyAdapter mAdapter = new MyAdapter(itemsData);
-        recyclerView.setAdapter(mAdapter);
+        adapter = new MyAdapter(itemsData);
+        recyclerView.setAdapter(adapter);
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setClickable(true);
@@ -192,8 +213,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             array[i] = (i+1)+") "+ versiculoList.get(i).getTexto();
         }
         return array;
-
     }
+
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -232,6 +253,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+
+    // Métodos do Import
     public RecyclerView getRecyclerView() {
         return recyclerView;
     }
@@ -241,4 +264,92 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public DrawerLayout getDrawer() {
         return drawer;
     }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        // Inflate a menu resource providing context menu items
+        MenuInflater inflater = actionMode.getMenuInflater();
+        inflater.inflate(R.menu.menu_cab_delete, menu);
+        return false;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_delete:
+                List<Integer> selectedItemPositions = adapter.getSelectedItems();
+                int currPos;
+                for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
+                    currPos = selectedItemPositions.get(i);
+                  //  RecyclerViewDemoApp.removeItemFromList(currPos);
+                  //  MyExpandAdapter.removeData(currPos);
+                }
+                actionMode.finish();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.action_bar) {
+            // fab click
+            //addItemToList();
+        } else if (v.getId() == R.id.item_title) {
+            // item click
+            int idx = recyclerView.getChildPosition(v);
+            if (actionMode != null) {
+                myToggleSelection(idx);
+                return;
+            }
+
+        }
+
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+        gestureDetector.onTouchEvent(e);
+        return false;
+    }
+
+    @Override
+    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+    }
+
+
+    private class RecyclerViewOnGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
+            onClick(view);
+            return super.onSingleTapConfirmed(e);
+        }
+
+        public void onLongPress(MotionEvent e) {
+            View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
+            if (actionMode != null) {
+                Toast.makeText(MainActivity.this,"Erro actionMode ", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            // Start the CAB using the ActionMode.Callback defined above
+
+            int idx = recyclerView.getChildAdapterPosition(view);
+            myToggleSelection(idx);
+            super.onLongPress(e);
+        }
+    }
+
 }
