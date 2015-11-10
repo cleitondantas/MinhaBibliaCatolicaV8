@@ -1,16 +1,16 @@
 package br.com.v8developmentstudio.minhabibliacatolica.adapter;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
 import java.util.ArrayList;
 import java.util.List;
-
 import br.com.v8developmentstudio.minhabibliacatolica.R;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
@@ -38,6 +38,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         viewHolder.txtViewTitle.setText(itemsData[position]);
         viewHolder.itemView.setActivated(selectedItems.get(position, false));
+        if(selectedItems.get(position, false)) {
+            viewHolder.itemView.setBackgroundResource(R.color.verde_florecente);
+            viewHolder.txtViewTitle.setTextColor(Color.BLACK);
+        }else{
+            viewHolder.itemView.setBackgroundResource(R.color.grey100);
+            viewHolder.txtViewTitle.setTextColor(Color.BLACK);
+        }
     }
 
     // Return the size of your itemsData (invoked by the layout manager)

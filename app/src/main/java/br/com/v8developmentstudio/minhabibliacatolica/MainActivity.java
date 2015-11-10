@@ -13,7 +13,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,6 +24,7 @@ import android.widget.ExpandableListView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
+import static android.view.GestureDetector.SimpleOnGestureListener;
 
 import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyAdapter;
 import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyExpandableAdapter;
@@ -40,12 +40,15 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener ,RecyclerView.OnItemTouchListener, View.OnClickListener,  ActionMode.Callback {
 
     private ArrayList<Livro> livroArrayList = new ArrayList<>();
+
+
+    private String tituloActionBar;
     private RecyclerView recyclerView;
     private ExpandableListView expandableList;
     private MyExpandableAdapter MyExpandAdapter;
     private DrawerLayout drawer;
-    ActionMode actionMode;
-    GestureDetectorCompat gestureDetector;
+    private ActionMode actionMode;
+    private GestureDetectorCompat gestureDetector;
     private MyAdapter adapter =null;
     private PersistenceDao persistenceDao = new PersistenceDao(this);
 
@@ -70,16 +73,19 @@ public class MainActivity extends AppCompatActivity
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         layoutManager.scrollToPosition(0);
-        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        expandableList = (ExpandableListView) findViewById(R.id.lvExp);
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        expandableList = (ExpandableListView) findViewById(R.id.id_expandable_listView);
+        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addOnItemTouchListener(this);
         gestureDetector = new GestureDetectorCompat(this, new RecyclerViewOnGestureListener());
-
 
        // persistenceDao.getDeleteBase(PersistenceDao.DATABASE_NAME);
         if(!persistenceDao.getExiteBase(PersistenceDao.DATABASE_NAME)) {
@@ -120,30 +126,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-/*        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-            final GestureDetector mGestureDetector = new GestureDetector(MainActivity.this, new GestureDetector.SimpleOnGestureListener() {
-                @Override
-                public boolean onSingleTapUp(MotionEvent e) {
-                    return true;
-                }
-            });
-
-            @Override
-            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
-                if (child != null && mGestureDetector.onTouchEvent(e)) {
-
-                    Toast.makeText(MainActivity.this,"Versículo "+ (1+recyclerView.getChildPosition(child)), Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-            }
-        });*/
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -172,6 +154,10 @@ public class MainActivity extends AppCompatActivity
         adapter.toggleSelection(idx);
         String title = getString(R.string.selected_count, adapter.getSelectedItemCount());
         setTitle(title);
+        if(adapter.getSelectedItemCount()==0){
+            setTitle(tituloActionBar);
+        }
+
     }
     // Método que popula os dados
     public void setGroupParents(List<Livro> livroArrayList) {
@@ -202,11 +188,9 @@ public class MainActivity extends AppCompatActivity
 
 
     public String[] recuperaVersiculosSelecionados(final int idLivroSelecionado,final int idCapituloSelecionado){
-
-        setTitle(livroArrayList.get(idLivroSelecionado).getAbreviacao() + " " + ((livroArrayList.get(idLivroSelecionado)).getCapituloList()).get(idCapituloSelecionado).getTitulo());
-
+        tituloActionBar=livroArrayList.get(idLivroSelecionado).getAbreviacao() + " " + ((livroArrayList.get(idLivroSelecionado)).getCapituloList()).get(idCapituloSelecionado).getTitulo();
+        setTitle(tituloActionBar);
         RelacLivroCap relacLivroCap = persistenceDao.getRelacLivroCap(persistenceDao.openDB(), idLivroSelecionado, idCapituloSelecionado);
-
         List<Versiculo>  versiculoList =  persistenceDao.getCapitulos(persistenceDao.openDB(), relacLivroCap.getNome_tabela());
         String[] array = new String[versiculoList.size()];
         for (int i=0;i < versiculoList.size();i++){
@@ -220,6 +204,11 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            if(adapter.getSelectedItemCount()!=0){
+                adapter.clearSelections();
+                setTitle(tituloActionBar);
+                return;
+            }
             super.onBackPressed();
         }
     }
@@ -265,6 +254,13 @@ public class MainActivity extends AppCompatActivity
         return drawer;
     }
 
+    public String getTituloActionBar() {
+        return tituloActionBar;
+    }
+
+    public void setTituloActionBar(String tituloActionBar) {
+        this.tituloActionBar = tituloActionBar;
+    }
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         // Inflate a menu resource providing context menu items
@@ -286,8 +282,7 @@ public class MainActivity extends AppCompatActivity
                 int currPos;
                 for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
                     currPos = selectedItemPositions.get(i);
-                  //  RecyclerViewDemoApp.removeItemFromList(currPos);
-                  //  MyExpandAdapter.removeData(currPos);
+
                 }
                 actionMode.finish();
                 return true;
@@ -298,7 +293,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
-
+        adapter.clearSelections();
     }
 
     @Override
@@ -306,10 +301,10 @@ public class MainActivity extends AppCompatActivity
         if (v.getId() == R.id.action_bar) {
             // fab click
             //addItemToList();
-        } else if (v.getId() == R.id.item_title) {
+        } else if (v.getId() == R.id.container_list_item) {
             // item click
-            int idx = recyclerView.getChildPosition(v);
-            if (actionMode != null) {
+            int idx = recyclerView.getChildAdapterPosition(v);
+            if (adapter.getSelectedItemCount() >0) {
                 myToggleSelection(idx);
                 return;
             }
@@ -329,18 +324,18 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
-    private class RecyclerViewOnGestureListener extends GestureDetector.SimpleOnGestureListener {
+    private class RecyclerViewOnGestureListener extends SimpleOnGestureListener{
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
+            view.setId(R.id.container_list_item);
             onClick(view);
             return super.onSingleTapConfirmed(e);
         }
 
         public void onLongPress(MotionEvent e) {
             View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
-            if (actionMode != null) {
+            if (adapter.getSelectedItemCount()>0) {
                 Toast.makeText(MainActivity.this,"Erro actionMode ", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -350,6 +345,9 @@ public class MainActivity extends AppCompatActivity
             myToggleSelection(idx);
             super.onLongPress(e);
         }
+
     }
+
+
 
 }

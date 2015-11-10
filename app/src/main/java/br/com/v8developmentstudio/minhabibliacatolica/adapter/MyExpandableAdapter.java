@@ -62,10 +62,14 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
                 Toast.makeText(activity,livroArrayList.get(groupPosition).getTituloLivro() +" "+ childCapitulos.get(childPosition).getTitulo(), Toast.LENGTH_SHORT).show();
                 idCapitulo = childCapitulos.get(childPosition).getId()+1;
                 String itemsData[] =  mainActivity.recuperaVersiculosSelecionados(idLivro,idCapitulo);
-                persistenceDao.salvarEstadoPreferences(idLivro,idCapitulo);
+                persistenceDao.salvarEstadoPreferences(idLivro, idCapitulo);
                 mainActivity.createView(mainActivity.getRecyclerView(), itemsData);
+
+
+                mainActivity.setTituloActionBar(livroArrayList.get(groupPosition).getAbreviacao() +" "+ childCapitulos.get(childPosition).getTitulo());
+                activity.setTitle(mainActivity.getTituloActionBar());
+
                 mainActivity.getDrawer().closeDrawers();
-                activity.setTitle(livroArrayList.get(groupPosition).getAbreviacao() +" "+ childCapitulos.get(childPosition).getTitulo());
             }
         });
         return convertView;
