@@ -42,7 +42,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="80dp"
         android:layout_marginRight="16dp"
-        android:src="@android:drawable/ic_menu_save"
+        android:src="@android:drawable/ic_menu_edit"
         app:backgroundTint="@color/colorPrimary"
         app:borderWidth="0dp"
         app:elevation="6dp"
@@ -55,7 +55,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="140dp"
         android:layout_marginRight="16dp"
-        android:src="@android:drawable/ic_dialog_info"
+        android:src="@drawable/abc_btn_rating_star_on_mtrl_alpha"
         app:backgroundTint="@color/colorPrimary"
         app:borderWidth="0dp"
         app:elevation="6dp"
@@ -68,10 +68,76 @@
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="200dp"
         android:layout_marginRight="16dp"
-        android:src="@android:drawable/ic_input_get"
+        android:src="@drawable/abc_ic_menu_share_mtrl_alpha"
         app:backgroundTint="@color/colorPrimary"
         app:borderWidth="0dp"
         app:elevation="6dp"
         app:fabSize="normal" />
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_mark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="85dp"
+        android:layout_marginRight="80dp"
+        android:src="@android:drawable/ic_input_get"
+        app:backgroundTint="@color/colorPrimary"
+        app:borderWidth="0dp"
+        app:elevation="10dp"
+        app:fabSize="mini" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_sublinhe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="85dp"
+        android:layout_marginRight="130dp"
+        android:src="@drawable/sublinhado"
+        app:backgroundTint="@color/colorPrimary"
+        app:borderWidth="0dp"
+        app:elevation="10dp"
+        app:fabSize="mini" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_color1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="85dp"
+        android:layout_marginRight="180dp"
+        android:src="@drawable/marca_texto"
+        app:backgroundTint="@color/colorAccent"
+        app:borderWidth="0dp"
+        app:elevation="10dp"
+        app:fabSize="mini" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_color2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="85dp"
+        android:layout_marginRight="230dp"
+        android:src="@drawable/marca_texto"
+        app:backgroundTint="@color/verde_florecente"
+        app:borderWidth="0dp"
+        app:elevation="10dp"
+        app:fabSize="mini" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_color3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="85dp"
+        android:layout_marginRight="280dp"
+        android:src="@drawable/marca_texto"
+        app:backgroundTint="@color/roxo_florecente"
+        app:borderWidth="0dp"
+        app:elevation="10dp"
+        app:fabSize="mini" />
 
 </android.support.design.widget.CoordinatorLayout>

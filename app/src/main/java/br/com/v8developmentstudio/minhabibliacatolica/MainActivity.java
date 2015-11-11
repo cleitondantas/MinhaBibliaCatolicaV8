@@ -19,11 +19,13 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
+import  android.view.animation.Animation;
 import static android.view.GestureDetector.SimpleOnGestureListener;
 
 import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyAdapter;
@@ -31,7 +33,9 @@ import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyExpandableAdapte
 import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyRecyclerScroll;
 import br.com.v8developmentstudio.minhabibliacatolica.dao.PersistenceDao;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Capitulo;
+import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemData;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Livro;
+import br.com.v8developmentstudio.minhabibliacatolica.vo.Marcacoes;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.RelacLivroCap;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Versiculo;
 
@@ -51,7 +55,8 @@ public class MainActivity extends AppCompatActivity
     private GestureDetectorCompat gestureDetector;
     private MyAdapter adapter =null;
     private PersistenceDao persistenceDao = new PersistenceDao(this);
-
+    private  FloatingActionButton fab,fab2,fab3,fab4,fabMark,fabSublinhe,fabMarkColor1,fabMarkColor2,fabMarkColor3;
+    private Animation animeFloating,animeFloating2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,15 +65,19 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         // Instancia as Variaveis
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        final FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
-        final FloatingActionButton fab3 = (FloatingActionButton) findViewById(R.id.fab3);
-        final FloatingActionButton fab4 = (FloatingActionButton) findViewById(R.id.fab4);
-        final android.view.animation.Animation animeFloating = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.rotate);
-        final android.view.animation.Animation animeFloating2 = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.rotate2);
-        fab2.hide();
-        fab3.hide();
-        fab4.hide();
+        fab =  (FloatingActionButton) findViewById(R.id.fab);
+        fab2 = (FloatingActionButton) findViewById(R.id.fab2);
+        fab3 = (FloatingActionButton) findViewById(R.id.fab3);
+        fab4 = (FloatingActionButton) findViewById(R.id.fab4);
+        fabMark = (FloatingActionButton) findViewById(R.id.fab_mark);
+        fabSublinhe = (FloatingActionButton) findViewById(R.id.fab_sublinhe);
+        fabMarkColor1 = (FloatingActionButton) findViewById(R.id.fab_color1);
+        fabMarkColor2 = (FloatingActionButton) findViewById(R.id.fab_color2);
+        fabMarkColor3 = (FloatingActionButton) findViewById(R.id.fab_color3);
+        animeFloating = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        animeFloating2 = AnimationUtils.loadAnimation(this, R.anim.rotate2);
+        final FloatingActionButton[] allFloatingActionButtons = new FloatingActionButton[]{fab2,fab3,fab4,fabMark,fabSublinhe,fabMarkColor1,fabMarkColor2,fabMarkColor3};
+        hideAllFab(allFloatingActionButtons);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -105,24 +114,20 @@ public class MainActivity extends AppCompatActivity
         //Instancio a Primeira pagina
         int idLivro = persistenceDao.getEstadoLivroPreferences();
         int idCapitulo = persistenceDao.getEstadoCapituloPreferences();
-        String itemsData[] = recuperaVersiculosSelecionados(idLivro, idCapitulo);
+        ItemData itemsData[] = recuperaVersiculosSelecionados(idLivro, idCapitulo);
         createView(recyclerView, itemsData);
 
 
         recyclerView.setOnScrollListener(new MyRecyclerScroll() {
             @Override
             public void show() {
-                fab.startAnimation(animeFloating);
                 fab.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
             }
 
             @Override
             public void hide() {
-                fab.startAnimation(animeFloating2);
                 fab.animate().translationY(fab.getHeight() + 200).setInterpolator(new AccelerateInterpolator(2)).start();
-                fab2.hide();
-                fab3.hide();
-                fab4.hide();
+                hideAllFab(allFloatingActionButtons);
             }
         });
 
@@ -131,14 +136,31 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 if (View.GONE == fab2.getVisibility()) {
                     fab.startAnimation(animeFloating);
-                    fab2.show();
-                    fab3.show();
-                    fab4.show();
+                    showAllFab(fab2, fab3, fab4);
+                    fab2.animate().translationY(0).setInterpolator(new DecelerateInterpolator(5)).setStartDelay(50);
+                    fab3.animate().translationY(0).setInterpolator(new DecelerateInterpolator(5)).setStartDelay(100);
+                    fab4.animate().translationY(0).setInterpolator(new DecelerateInterpolator(5)).setStartDelay(150);
+
                 } else {
                     fab.startAnimation(animeFloating2);
-                    fab2.hide();
-                    fab3.hide();
-                    fab4.hide();
+
+                    fab2.animate().translationY(fab.getHeight() + 100).setInterpolator(new AccelerateInterpolator(3)).start();
+                    fab3.animate().translationY(fab2.getHeight() + 100).setInterpolator(new AccelerateInterpolator(3)).start();
+                    fab4.animate().translationY(fab3.getHeight() + 100).setInterpolator(new AccelerateInterpolator(3)).start();
+                    hideAllFab(fab2, fab3, fab4,fabMark,fabSublinhe,fabMarkColor1,fabMarkColor2,fabMarkColor3);
+
+                }
+            }
+        });
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (View.GONE == fabMark.getVisibility()) {
+                    showAllFab(fabMark, fabSublinhe, fabMarkColor1, fabMarkColor2, fabMarkColor3);
+                    hideAllFab(fab3, fab4);
+                } else {
+                    showAllFab(fab3, fab4);
+                    hideAllFab(fabMark, fabSublinhe, fabMarkColor1, fabMarkColor2, fabMarkColor3);
                 }
             }
         });
@@ -177,7 +199,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     // Cria a visualização da lista
-    public void createView(RecyclerView recyclerView, String[] itemsData) {
+    public void createView(RecyclerView recyclerView, ItemData[] itemsData) {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MyAdapter(itemsData);
         recyclerView.setAdapter(adapter);
@@ -187,14 +209,28 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public String[] recuperaVersiculosSelecionados(final int idLivroSelecionado,final int idCapituloSelecionado){
+    public ItemData[] recuperaVersiculosSelecionados(final int idLivroSelecionado,final int idCapituloSelecionado){
         tituloActionBar=livroArrayList.get(idLivroSelecionado).getAbreviacao() + " " + ((livroArrayList.get(idLivroSelecionado)).getCapituloList()).get(idCapituloSelecionado).getTitulo();
         setTitle(tituloActionBar);
+        //List<Marcacoes>  marcacoesList=  persistenceDao.recuperaMarcacoes(persistenceDao.openDB(), idLivroSelecionado, idCapituloSelecionado);
+        List<Marcacoes>  marcacoesList=new ArrayList<>();
         RelacLivroCap relacLivroCap = persistenceDao.getRelacLivroCap(persistenceDao.openDB(), idLivroSelecionado, idCapituloSelecionado);
         List<Versiculo>  versiculoList =  persistenceDao.getCapitulos(persistenceDao.openDB(), relacLivroCap.getNome_tabela());
-        String[] array = new String[versiculoList.size()];
+
+
+
+        ItemData[] array = new ItemData[versiculoList.size()];
+
         for (int i=0;i < versiculoList.size();i++){
-            array[i] = (i+1)+") "+ versiculoList.get(i).getTexto();
+            array[i]= new ItemData();
+            for (int x=0;x < marcacoesList.size();x++){
+                if(marcacoesList.get(x).getIdVersiculo()==(i+1)){
+                    array[i].setFavorito(marcacoesList.get(x).getFavorito());
+                    array[i].setSublinhado(marcacoesList.get(x).getSublinhado());
+                    array[i].setMarcacao_color(marcacoesList.get(x).getMarcacao_color());
+                }
+            }
+            array[i].setTexto((i+1)+") "+ versiculoList.get(i).getTexto());
         }
         return array;
     }
@@ -349,5 +385,22 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    //Métodos de Apoio
 
+    /**
+     *  Chama o Hide de todos dos FloatingActionButton Passados
+     */
+    private void hideAllFab(FloatingActionButton... fabsArray){
+        for (int i=0;i<fabsArray.length;i++){
+            fabsArray[i].hide();
+        }
+    }
+    /**
+     *
+     */
+    private void showAllFab(FloatingActionButton... fabsArray){
+        for (int i=0;i<fabsArray.length;i++){
+            fabsArray[i].show();
+        }
+    }
 }

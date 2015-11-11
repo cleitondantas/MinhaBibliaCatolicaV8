@@ -3,6 +3,8 @@ package br.com.v8developmentstudio.minhabibliacatolica.adapter;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +14,13 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import br.com.v8developmentstudio.minhabibliacatolica.R;
+import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemData;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-    private String[] itemsData;
+    private ItemData[] itemsData;
     private SparseBooleanArray selectedItems;
 
-    public MyAdapter(String[] itemsData) {
+    public MyAdapter(ItemData[] itemsData) {
         this.itemsData = itemsData;
         selectedItems = new SparseBooleanArray();
     }
@@ -36,9 +39,24 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        viewHolder.txtViewTitle.setText(itemsData[position]);
+        viewHolder.txtViewTitle.setText(itemsData[position].getTexto());
         viewHolder.itemView.setActivated(selectedItems.get(position, false));
+
+        if(itemsData[position].getSublinhado()!=null && itemsData[position].getSublinhado()) {
+            String caption = viewHolder.txtViewTitle.getText().toString();
+            // Método que sublinha a linha no textview
+            SpannableString str = new SpannableString(caption);
+            str.setSpan(new UnderlineSpan(), 0, caption.length(), 0);
+            viewHolder.txtViewTitle.setText(str);
+        }
+        if(itemsData[position].getMarcacao_color() !=null && itemsData[position].getMarcacao_color().length()>0){
+            viewHolder.itemView.setBackgroundResource(Integer.parseInt(itemsData[position].getMarcacao_color()));
+            viewHolder.txtViewTitle.setTextColor(Color.BLACK);
+        }
+
+
         if(selectedItems.get(position, false)) {
+            //Código que marca o texto
             viewHolder.itemView.setBackgroundResource(R.color.verde_florecente);
             viewHolder.txtViewTitle.setTextColor(Color.BLACK);
         }else{
@@ -89,7 +107,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     }
 
-    public String getItemsData(int i) {
-        return itemsData[i];
+    public CharSequence getItemsData(int i) {
+        return itemsData[i].getTexto();
     }
 }

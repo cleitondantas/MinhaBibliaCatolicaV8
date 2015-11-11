@@ -18,6 +18,7 @@ import br.com.v8developmentstudio.minhabibliacatolica.MainActivity;
 import br.com.v8developmentstudio.minhabibliacatolica.R;
 import br.com.v8developmentstudio.minhabibliacatolica.dao.PersistenceDao;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Capitulo;
+import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemData;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Livro;
 
 public class MyExpandableAdapter extends BaseExpandableListAdapter {
@@ -61,7 +62,7 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
             public void onClick(View view) {
                 Toast.makeText(activity,livroArrayList.get(groupPosition).getTituloLivro() +" "+ childCapitulos.get(childPosition).getTitulo(), Toast.LENGTH_SHORT).show();
                 idCapitulo = childCapitulos.get(childPosition).getId()+1;
-                String itemsData[] =  mainActivity.recuperaVersiculosSelecionados(idLivro,idCapitulo);
+                ItemData[] itemsData =  mainActivity.recuperaVersiculosSelecionados(idLivro,idCapitulo);
                 persistenceDao.salvarEstadoPreferences(idLivro, idCapitulo);
                 mainActivity.createView(mainActivity.getRecyclerView(), itemsData);
 

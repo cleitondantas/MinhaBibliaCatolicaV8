@@ -20,6 +20,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Livro;
+import br.com.v8developmentstudio.minhabibliacatolica.vo.Marcacoes;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.RelacLivroCap;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Versiculo;
 
@@ -43,6 +44,10 @@ public class PersistenceDao extends SQLiteOpenHelper{
     private static final String TABLE_FAVORITOS = "FAVORITOS";
     private static final String COLUMN_IDORACAO = "IDORACAO";
 
+    private static final String TABLE_MARCACOES = "MARCACOES";
+    private static final String COLUMN_SUBLINHADO ="SUBLINHADO";
+    private static final String COLUMN_MARCACAO_COLOR ="MARCACAO_COLOR";
+    private static final String COLUMN_FAVORITO ="FAVORITO";
 
     private Cursor cursor;
     private static PersistenceDao instance;
@@ -130,35 +135,33 @@ public class PersistenceDao extends SQLiteOpenHelper{
 
 
     /**
-     * Método que persiste o numero da oracao que deseja que seja favoritado
-     * @param bancoDados
-     * @param numero
-     */
-    public void salvarFavorito(SQLiteDatabase bancoDados,int numero){
-        String query = "INSERT or replace INTO "+TABLE_FAVORITOS+" ("+COLUMN_IDORACAO+") VALUES ("+numero+");";
-        bancoDados.execSQL(query);
-    }
-    /**
-     * Busca o favorito por id de oracao retornando se existe eu nao
-     * @param numero
+     * Recupera todoas as marcacoes realizadas em um capitulo especifico.
+     * @param idLivro
+     * @param idNumCap
      * @return
      */
-    public boolean buscaFavoritoPorIdOracao(SQLiteDatabase bancoDados,int numero){
-        cursor = bancoDados.query(TABLE_FAVORITOS, new String[]{COLUMN_IDORACAO},"IDORACAO = "+numero  ,null,null,null,null);
-        return cursor.getCount()>0;
-    }
 
-    /**
-     * Busca o favorito por id de oracao retornando se existe eu nao
-     * @return
-     */
-    public List<Integer> buscaTodosFavoritos(SQLiteDatabase bancoDados){
-        List<Integer> registrosFavoritos = new ArrayList<Integer>();
-        cursor = bancoDados.query(TABLE_FAVORITOS, new String[]{COLUMN_IDORACAO},null,null,null,null,null);
+    public List<Marcacoes> recuperaMarcacoes(SQLiteDatabase bancoDados,int idLivro,int idNumCap){
+        List<Marcacoes> marcacoesArrayList = new ArrayList<>();
+
+        String query =  COLUMN_IDLIVRO+" = ? AND "+COLUMN_IDNUMCAP +" = ?";
+        String[] args = {""+idLivro,""+idNumCap};
+        String[] columns = new String[]{COLUMN_ID,COLUMN_IDLIVRO,COLUMN_IDNUMCAP,COLUMN_VERSICULO,COLUMN_SUBLINHADO,COLUMN_MARCACAO_COLOR,COLUMN_FAVORITO};
+        cursor = bancoDados.query(TABLE_MARCACOES,columns,query,args,null,null,null);
+        Marcacoes marcacoes =null;
         while(cursor.moveToNext()){
-            registrosFavoritos.add(cursor.getInt(cursor.getColumnIndex(COLUMN_IDORACAO)));
+            marcacoes = new Marcacoes();
+            marcacoes.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
+            marcacoes.setIdLivro(idLivro);
+            marcacoes.setIdNumCap(idNumCap);
+            marcacoes.setIdVersiculo(cursor.getInt(cursor.getColumnIndex(COLUMN_VERSICULO)));
+            marcacoes.setSublinhado(cursor.getInt(cursor.getColumnIndex(COLUMN_SUBLINHADO)) > 0);
+            marcacoes.setMarcacao_color(cursor.getString(cursor.getColumnIndex(COLUMN_MARCACAO_COLOR)));
+            marcacoes.setFavorito(cursor.getInt(cursor.getColumnIndex(COLUMN_FAVORITO)) > 0);
+            marcacoesArrayList.add(marcacoes);
         }
-        return registrosFavoritos;
+
+        return  marcacoesArrayList;
     }
 
 
@@ -287,6 +290,8 @@ public class PersistenceDao extends SQLiteOpenHelper{
         bancoDados.close();
 
     }
+
+
 
     public void salvarEstadoPreferences(int idLivro,int idCapitulo){
         SharedPreferences settings = contextStatic.getSharedPreferences("Preferences", 0);
