@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity
     private PersistenceDao persistenceDao = new PersistenceDao(this);
     private  FloatingActionButton fab,fab2,fab3,fab4,fabMark,fabSublinhe,fabMarkColor1,fabMarkColor2,fabMarkColor3;
     private Animation animeFloating,animeFloating2;
+    private int idLivro, idCapitulo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,8 +84,6 @@ public class MainActivity extends AppCompatActivity
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         layoutManager.scrollToPosition(0);
 
-
-
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         expandableList = (ExpandableListView) findViewById(R.id.id_expandable_listView);
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
@@ -96,7 +95,7 @@ public class MainActivity extends AppCompatActivity
         recyclerView.addOnItemTouchListener(this);
         gestureDetector = new GestureDetectorCompat(this, new RecyclerViewOnGestureListener());
 
-       // persistenceDao.getDeleteBase(PersistenceDao.DATABASE_NAME);
+        persistenceDao.getDeleteBase(PersistenceDao.DATABASE_NAME);
         if(!persistenceDao.getExiteBase(PersistenceDao.DATABASE_NAME)) {
             persistenceDao.openDB();
             persistenceDao.copiaBanco(PersistenceDao.DATABASE_NAME);
@@ -112,8 +111,8 @@ public class MainActivity extends AppCompatActivity
         expandableList.setAdapter(MyExpandAdapter);
 
         //Instancio a Primeira pagina
-        int idLivro = persistenceDao.getEstadoLivroPreferences();
-        int idCapitulo = persistenceDao.getEstadoCapituloPreferences();
+        this.idLivro = persistenceDao.getEstadoLivroPreferences();
+        this.idCapitulo = persistenceDao.getEstadoCapituloPreferences();
         ItemData itemsData[] = recuperaVersiculosSelecionados(idLivro, idCapitulo);
         createView(recyclerView, itemsData);
 
@@ -147,7 +146,7 @@ public class MainActivity extends AppCompatActivity
                     fab2.animate().translationY(fab.getHeight() + 100).setInterpolator(new AccelerateInterpolator(3)).start();
                     fab3.animate().translationY(fab2.getHeight() + 100).setInterpolator(new AccelerateInterpolator(3)).start();
                     fab4.animate().translationY(fab3.getHeight() + 100).setInterpolator(new AccelerateInterpolator(3)).start();
-                    hideAllFab(fab2, fab3, fab4,fabMark,fabSublinhe,fabMarkColor1,fabMarkColor2,fabMarkColor3);
+                    hideAllFab(fab2, fab3, fab4, fabMark, fabSublinhe, fabMarkColor1, fabMarkColor2, fabMarkColor3);
 
                 }
             }
@@ -162,6 +161,26 @@ public class MainActivity extends AppCompatActivity
                     showAllFab(fab3, fab4);
                     hideAllFab(fabMark, fabSublinhe, fabMarkColor1, fabMarkColor2, fabMarkColor3);
                 }
+            }
+        });
+
+        fabMarkColor1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Marcacoes marcacoes;
+                List<Marcacoes> marcacoesList = new ArrayList<>();
+                for (Integer versiculo : adapter.getSelectedItems()) {
+                    marcacoes = new Marcacoes();
+                    marcacoes.setIdNumCap(idCapitulo);
+                    marcacoes.setIdLivro(idLivro);
+                    marcacoes.setIdVersiculo((versiculo+1));
+                    marcacoes.setFavorito(false);
+                    marcacoes.setMarcacao_color(Integer.toString(R.color.colorAccent));
+
+                    marcacoesList.add(marcacoes);
+                }
+
+                persistenceDao.salvarMarcarcoes(persistenceDao.openDB(), idLivro, idCapitulo,marcacoesList);
             }
         });
 
@@ -203,21 +222,19 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MyAdapter(itemsData);
         recyclerView.setAdapter(adapter);
-
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setClickable(true);
     }
 
 
     public ItemData[] recuperaVersiculosSelecionados(final int idLivroSelecionado,final int idCapituloSelecionado){
+        this.idLivro = idLivroSelecionado;
+        this.idCapitulo =idCapituloSelecionado;
         tituloActionBar=livroArrayList.get(idLivroSelecionado).getAbreviacao() + " " + ((livroArrayList.get(idLivroSelecionado)).getCapituloList()).get(idCapituloSelecionado).getTitulo();
         setTitle(tituloActionBar);
-        //List<Marcacoes>  marcacoesList=  persistenceDao.recuperaMarcacoes(persistenceDao.openDB(), idLivroSelecionado, idCapituloSelecionado);
-        List<Marcacoes>  marcacoesList=new ArrayList<>();
+        List<Marcacoes>  marcacoesList=  persistenceDao.recuperaMarcacoes(persistenceDao.openDB(), idLivroSelecionado, idCapituloSelecionado);
         RelacLivroCap relacLivroCap = persistenceDao.getRelacLivroCap(persistenceDao.openDB(), idLivroSelecionado, idCapituloSelecionado);
         List<Versiculo>  versiculoList =  persistenceDao.getCapitulos(persistenceDao.openDB(), relacLivroCap.getNome_tabela());
-
-
 
         ItemData[] array = new ItemData[versiculoList.size()];
 
@@ -372,7 +389,7 @@ public class MainActivity extends AppCompatActivity
         public void onLongPress(MotionEvent e) {
             View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
             if (adapter.getSelectedItemCount()>0) {
-                Toast.makeText(MainActivity.this,"Erro actionMode ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"Selecione com Click Simples", Toast.LENGTH_SHORT).show();
                 return;
             }
             // Start the CAB using the ActionMode.Callback defined above

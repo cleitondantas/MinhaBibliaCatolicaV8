@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -160,10 +161,24 @@ public class PersistenceDao extends SQLiteOpenHelper{
             marcacoes.setFavorito(cursor.getInt(cursor.getColumnIndex(COLUMN_FAVORITO)) > 0);
             marcacoesArrayList.add(marcacoes);
         }
-
+        bancoDados.close();
         return  marcacoesArrayList;
     }
 
+    public void salvarMarcarcoes(SQLiteDatabase bancoDados,int idLivro,int idNumCap, List<Marcacoes> marcacoes){
+        ContentValues values;
+        for(Marcacoes marc : marcacoes){
+            values = new ContentValues();
+            values.put(COLUMN_IDLIVRO, marc.getIdLivro());
+            values.put(COLUMN_IDNUMCAP,marc.getIdNumCap());
+            values.put(COLUMN_VERSICULO,marc.getIdVersiculo());
+            values.put(COLUMN_SUBLINHADO,marc.getSublinhado());
+            values.put(COLUMN_MARCACAO_COLOR,marc.getMarcacao_color());
+            values.put(COLUMN_FAVORITO,marc.getFavorito());
+            bancoDados.insert(TABLE_MARCACOES,null,values);
+        }
+        bancoDados.close();
+    }
 
 
     /**
