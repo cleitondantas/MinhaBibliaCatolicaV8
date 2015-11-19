@@ -69,4 +69,20 @@ public class Marcacoes {
         this.favorito = favorito;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Marcacoes)) return false;
+
+        Marcacoes marcacoes = (Marcacoes) o;
+
+        return getIdVersiculo() == marcacoes.getIdVersiculo();
+
+    }
+
+    @Override
+    public int hashCode() {
+        return getIdVersiculo();
+    }
 }

@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity
     private  FloatingActionButton fab,fab2,fab3,fab4,fabMark,fabSublinhe,fabMarkColor1,fabMarkColor2,fabMarkColor3;
     private Animation animeFloating,animeFloating2;
     private int idLivro, idCapitulo;
+    private ItemData itemsData[];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity
         recyclerView.addOnItemTouchListener(this);
         gestureDetector = new GestureDetectorCompat(this, new RecyclerViewOnGestureListener());
 
-        persistenceDao.getDeleteBase(PersistenceDao.DATABASE_NAME);
+       // persistenceDao.getDeleteBase(PersistenceDao.DATABASE_NAME);
         if(!persistenceDao.getExiteBase(PersistenceDao.DATABASE_NAME)) {
             persistenceDao.openDB();
             persistenceDao.copiaBanco(PersistenceDao.DATABASE_NAME);
@@ -113,11 +114,12 @@ public class MainActivity extends AppCompatActivity
         //Instancio a Primeira pagina
         this.idLivro = persistenceDao.getEstadoLivroPreferences();
         this.idCapitulo = persistenceDao.getEstadoCapituloPreferences();
-        ItemData itemsData[] = recuperaVersiculosSelecionados(idLivro, idCapitulo);
+        itemsData = recuperaVersiculosSelecionados(idLivro,idCapitulo);
         createView(recyclerView, itemsData);
 
 
         recyclerView.setOnScrollListener(new MyRecyclerScroll() {
+
             @Override
             public void show() {
                 fab.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
@@ -167,30 +169,107 @@ public class MainActivity extends AppCompatActivity
         fabMarkColor1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Marcacoes marcacoes;
-                List<Marcacoes> marcacoesList = new ArrayList<>();
-                for (Integer versiculo : adapter.getSelectedItems()) {
-                    marcacoes = new Marcacoes();
-                    marcacoes.setIdNumCap(idCapitulo);
-                    marcacoes.setIdLivro(idLivro);
-                    marcacoes.setIdVersiculo((versiculo+1));
-                    marcacoes.setFavorito(false);
-                    marcacoes.setMarcacao_color(Integer.toString(R.color.colorAccent));
-
-                    marcacoesList.add(marcacoes);
-                }
-
-                persistenceDao.salvarMarcarcoes(persistenceDao.openDB(), idLivro, idCapitulo,marcacoesList);
+                realizaMarcacao(R.color.colorAccent);
+                moveScroll();
             }
         });
 
+        fabMarkColor2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(adapter.getSelectedItems().size()!=0) {
+                    realizaMarcacao(R.color.verde_florecente);
+                    moveScroll();
+                }
+            }
+        });
 
+        fabMarkColor3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(adapter.getSelectedItems().size()!=0) {
+                    realizaMarcacao(R.color.roxo_florecente);
+                    moveScroll();
+
+                }
+            }
+        });
+
+        fabMark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(adapter.getSelectedItems().size()!=0){
+                    deletaMarcaoes();
+                    moveScroll();
+                }
+            }
+        });
+        fabSublinhe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(adapter.getSelectedItems().size()!=0){
+                    realizaMarcacaoSublinhado();
+                    moveScroll();
+                }
+            }
+        });
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
+    private void moveScroll(){
+        LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
+        if(MyRecyclerScroll.getDisplayedposition()<=itemsData.length){
+            llm.scrollToPositionWithOffset(MyRecyclerScroll.getDisplayedposition(), itemsData.length);
+        }
+    }
+
+    public void realizaMarcacao(int R_Color){
+        Marcacoes marcacoes;
+        List<Marcacoes> marcacoesList = new ArrayList<>();
+        for (Integer versiculo : adapter.getSelectedItems()) {
+            marcacoes = new Marcacoes();
+            marcacoes.setIdNumCap(idCapitulo);
+            marcacoes.setIdLivro(idLivro);
+            marcacoes.setIdVersiculo((versiculo+1));
+            marcacoes.setFavorito(false);
+            marcacoes.setMarcacao_color(Integer.toString(R_Color));
+            marcacoesList.add(marcacoes);
+        }
+        persistenceDao.salvarOrUpdateMarcarcoes(idLivro, idCapitulo, marcacoesList);
+        itemsData = recuperaVersiculosSelecionados(idLivro, idCapitulo);
+        createView(recyclerView, itemsData);
+    }
+    public void realizaMarcacaoSublinhado(){
+        Marcacoes marcacoes;
+        List<Marcacoes> marcacoesList = new ArrayList<>();
+        for (Integer versiculo : adapter.getSelectedItems()) {
+            marcacoes = new Marcacoes();
+            marcacoes.setIdNumCap(idCapitulo);
+            marcacoes.setIdLivro(idLivro);
+            marcacoes.setIdVersiculo((versiculo + 1));
+            marcacoes.setSublinhado(true);
+            marcacoesList.add(marcacoes);
+        }
+        persistenceDao.salvarOrUpdateMarcarcoes(idLivro, idCapitulo, marcacoesList);
+
+        itemsData = recuperaVersiculosSelecionados(idLivro, idCapitulo);
+        createView(recyclerView, itemsData);
+    }
+    public void deletaMarcaoes(){
+       Integer[] vers = new Integer[adapter.getSelectedItems().size()];
+        for (int i=0;i<adapter.getSelectedItems().size();i++) {
+            vers[i] = (adapter.getSelectedItems().get(i)+1);
+        }
+        persistenceDao.deletMarcacoes(persistenceDao.openDB(),idLivro,idCapitulo,vers);
+
+        itemsData = recuperaVersiculosSelecionados(idLivro, idCapitulo);
+        createView(recyclerView, itemsData);
+    }
+
     private void myToggleSelection(int idx) {
         adapter.toggleSelection(idx);
         String title = getString(R.string.selected_count, adapter.getSelectedItemCount());
@@ -219,6 +298,8 @@ public class MainActivity extends AppCompatActivity
 
     // Cria a visualização da lista
     public void createView(RecyclerView recyclerView, ItemData[] itemsData) {
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MyAdapter(itemsData);
         recyclerView.setAdapter(adapter);
@@ -230,10 +311,11 @@ public class MainActivity extends AppCompatActivity
     public ItemData[] recuperaVersiculosSelecionados(final int idLivroSelecionado,final int idCapituloSelecionado){
         this.idLivro = idLivroSelecionado;
         this.idCapitulo =idCapituloSelecionado;
-        tituloActionBar=livroArrayList.get(idLivroSelecionado).getAbreviacao() + " " + ((livroArrayList.get(idLivroSelecionado)).getCapituloList()).get(idCapituloSelecionado).getTitulo();
+        Livro livro = livroArrayList.get(idLivroSelecionado-1);//Dou -1 Pois eu passo o id mais ná verdade eu estou pegando em uma lista onde inicia com 0
+        tituloActionBar=livro.getAbreviacao() + " " + livro.getCapituloList().get(idCapituloSelecionado-1).getTitulo();
         setTitle(tituloActionBar);
-        List<Marcacoes>  marcacoesList=  persistenceDao.recuperaMarcacoes(persistenceDao.openDB(), idLivroSelecionado, idCapituloSelecionado);
-        RelacLivroCap relacLivroCap = persistenceDao.getRelacLivroCap(persistenceDao.openDB(), idLivroSelecionado, idCapituloSelecionado);
+        List<Marcacoes>  marcacoesList=  persistenceDao.recuperaMarcacoes(persistenceDao.openDB(), livro.getId(), idCapituloSelecionado);
+        RelacLivroCap relacLivroCap = persistenceDao.getRelacLivroCap(persistenceDao.openDB(), livro.getId(),idCapituloSelecionado);
         List<Versiculo>  versiculoList =  persistenceDao.getCapitulos(persistenceDao.openDB(), relacLivroCap.getNome_tabela());
 
         ItemData[] array = new ItemData[versiculoList.size()];
@@ -332,9 +414,7 @@ public class MainActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.menu_delete:
                 List<Integer> selectedItemPositions = adapter.getSelectedItems();
-                int currPos;
                 for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
-                    currPos = selectedItemPositions.get(i);
 
                 }
                 actionMode.finish();
@@ -346,6 +426,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
+
         adapter.clearSelections();
     }
 

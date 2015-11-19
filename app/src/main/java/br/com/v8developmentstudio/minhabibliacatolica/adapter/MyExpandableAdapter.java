@@ -61,9 +61,9 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View view) {
                 Toast.makeText(activity,livroArrayList.get(groupPosition).getTituloLivro() +" "+ childCapitulos.get(childPosition).getTitulo(), Toast.LENGTH_SHORT).show();
-                idCapitulo = childCapitulos.get(childPosition).getId()+1;
-                ItemData[] itemsData =  mainActivity.recuperaVersiculosSelecionados(idLivro,idCapitulo);
-                persistenceDao.salvarEstadoPreferences(idLivro, idCapitulo);
+                idCapitulo = childCapitulos.get(childPosition).getId();
+                ItemData[] itemsData =  mainActivity.recuperaVersiculosSelecionados(idLivro,(idCapitulo+1));
+                persistenceDao.salvarEstadoPreferences(idLivro, (idCapitulo+1));
                 mainActivity.createView(mainActivity.getRecyclerView(), itemsData);
 
 

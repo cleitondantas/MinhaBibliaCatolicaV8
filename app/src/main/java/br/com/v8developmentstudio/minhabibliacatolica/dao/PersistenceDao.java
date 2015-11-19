@@ -72,10 +72,7 @@ public class PersistenceDao extends SQLiteOpenHelper{
      */
     public boolean verificaBancoExistente(SQLiteDatabase bancoDados){
         cursor = bancoDados.query(TABLE_LIVROS, new String[]{COLUMN_ID}, null,null,null,null,null);
-        if(cursor.getCount()>2){
-            return true;
-        }
-        return false;
+        return cursor.getCount() > 2;
     }
 
     /**
@@ -164,9 +161,43 @@ public class PersistenceDao extends SQLiteOpenHelper{
         bancoDados.close();
         return  marcacoesArrayList;
     }
+    public void deletMarcacoes(SQLiteDatabase bancoDados,int idLivro,int idNumCap,Integer... idsVersiculos){
+        for (Integer idVersiculo:idsVersiculos) {
+            String query = COLUMN_IDLIVRO + " = ? AND " + COLUMN_IDNUMCAP + " = ? AND " + COLUMN_VERSICULO + " = ?";
+            String[] args = {"" + idLivro, "" + idNumCap, "" + idVersiculo};
+            String[] columns = new String[]{COLUMN_ID, COLUMN_IDLIVRO, COLUMN_IDNUMCAP, COLUMN_VERSICULO, COLUMN_SUBLINHADO, COLUMN_MARCACAO_COLOR, COLUMN_FAVORITO};
+            bancoDados.delete(TABLE_MARCACOES, query, args);
+        }
+        bancoDados.close();
 
-    public void salvarMarcarcoes(SQLiteDatabase bancoDados,int idLivro,int idNumCap, List<Marcacoes> marcacoes){
+    }
+
+    public void salvarOrUpdateMarcarcoes(int idLivro,int idNumCap, List<Marcacoes> marcacoes){
+       List<Marcacoes> marcacoesExistentes = recuperaMarcacoes(this.openDB(),idLivro,idNumCap);
+        this.openDB();
         ContentValues values;
+
+        if(marcacoesExistentes.size()!=0) {
+            for(Marcacoes marc : marcacoes) {
+                for (Marcacoes list : marcacoesExistentes) {
+                    values = new ContentValues();
+                    if (list.getIdVersiculo() == marc.getIdVersiculo()) {
+                        if(marc.getSublinhado()!= null){
+                            values.put(COLUMN_SUBLINHADO,marc.getSublinhado());
+                        }
+                        if(marc.getMarcacao_color()!=null){
+                            values.put(COLUMN_MARCACAO_COLOR,marc.getMarcacao_color());
+                        }
+                        if(marc.getFavorito()!=null){
+                            values.put(COLUMN_FAVORITO,marc.getFavorito());
+                        }
+                        bancoDados.update(TABLE_MARCACOES, values,COLUMN_ID +"= ?",new String[]{""+list.getId()});
+                    }
+                }
+            }
+            marcacoes.removeAll(marcacoesExistentes);
+        }
+
         for(Marcacoes marc : marcacoes){
             values = new ContentValues();
             values.put(COLUMN_IDLIVRO, marc.getIdLivro());
@@ -174,8 +205,8 @@ public class PersistenceDao extends SQLiteOpenHelper{
             values.put(COLUMN_VERSICULO,marc.getIdVersiculo());
             values.put(COLUMN_SUBLINHADO,marc.getSublinhado());
             values.put(COLUMN_MARCACAO_COLOR,marc.getMarcacao_color());
-            values.put(COLUMN_FAVORITO,marc.getFavorito());
-            bancoDados.insert(TABLE_MARCACOES,null,values);
+            values.put(COLUMN_FAVORITO, marc.getFavorito());
+            bancoDados.insert(TABLE_MARCACOES, null, values);
         }
         bancoDados.close();
     }
@@ -307,7 +338,6 @@ public class PersistenceDao extends SQLiteOpenHelper{
     }
 
 
-
     public void salvarEstadoPreferences(int idLivro,int idCapitulo){
         SharedPreferences settings = contextStatic.getSharedPreferences("Preferences", 0);
         SharedPreferences.Editor editor = settings.edit();
@@ -324,5 +354,6 @@ public class PersistenceDao extends SQLiteOpenHelper{
         SharedPreferences settings = contextStatic.getSharedPreferences("Preferences", 0);
         return settings.getInt("idcapitulo", 1);
     }
+
 
 }

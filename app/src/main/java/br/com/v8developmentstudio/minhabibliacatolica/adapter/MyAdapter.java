@@ -60,8 +60,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
         if(selectedItems.get(position, false)) {
             //Código que marca o texto
-            viewHolder.itemView.setBackgroundResource(R.color.verde_florecente);
-            viewHolder.txtViewTitle.setTextColor(Color.BLACK);
+            viewHolder.itemView.setBackgroundResource(R.color.marca_texto);
+            viewHolder.txtViewTitle.setTextColor(Color.WHITE);
         }else if(!controlaSelecao){
             viewHolder.itemView.setBackgroundResource(R.color.grey100);
             viewHolder.txtViewTitle.setTextColor(Color.BLACK);

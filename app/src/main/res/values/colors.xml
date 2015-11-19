@@ -2,13 +2,17 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="grey100">#F5F5F5</color>
+
+    <color name="grey100">#ffffff</color>
     <color name="primary">#9c27b0</color>
     <color name="primary_dark">#4a148c</color>
     <color name="accent">#f50057</color>
-    <color name="verde_florecente">#D7FB1B</color>
-    <color name="roxo_florecente">#8E1EFE</color>
+    <color name="marca_texto">#3F51B5</color>
 
+    <color name="verde_florecente">#eaff79</color>
+    <color name="roxo_florecente">#c183ff</color>
+    <color name="colorAccent">#ff7daa</color>
+    <color name="colorGrafit">#595959</color>
+    <color name="colorBlack">#000000</color>
 
 </resources>
