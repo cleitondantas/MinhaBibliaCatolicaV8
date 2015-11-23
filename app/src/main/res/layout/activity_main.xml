@@ -20,13 +20,14 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_main">
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/activity_main_drawer">
 
         <ExpandableListView
             android:id="@+id/id_expandable_listView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="90dp" />
+            android:paddingTop="250dp" />
     </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

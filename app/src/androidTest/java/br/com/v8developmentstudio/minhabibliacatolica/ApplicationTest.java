@@ -1,4 +1,4 @@
-package br.com.v8developmentstudio.minhabibliacatlica;
+package br.com.v8developmentstudio.minhabibliacatolica;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

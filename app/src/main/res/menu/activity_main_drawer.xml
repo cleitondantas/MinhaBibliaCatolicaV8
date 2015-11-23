@@ -3,64 +3,22 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camara"
-            android:icon="@android:drawable/ic_menu_camera"
-            android:title="Import" />
+            android:id="@+id/idFavoritos"
+            android:icon="@drawable/abc_btn_rating_star_on_mtrl_alpha"
+            android:title="@string/title_favoritos"
+            android:enabled="true"/>
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@android:drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@android:drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@android:drawable/ic_menu_manage"
-            android:title="Tools" />
-        <item
-            android:id="@+id/nav_manage2"
-            android:icon="@android:drawable/ic_menu_manage"
-            android:title="Tools" />
-        <item
-            android:id="@+id/nav_manage3"
-            android:icon="@android:drawable/ic_menu_manage"
-            android:title="Tools" />
-        <item
-            android:id="@+id/nav_manage4"
-            android:icon="@android:drawable/ic_menu_manage"
-            android:title="Tools" />
-        <item
-            android:id="@+id/nav_manage5"
-            android:icon="@android:drawable/ic_menu_manage"
-            android:title="Tools" />
-        <item
-            android:id="@+id/nav_manage5"
-            android:icon="@android:drawable/ic_menu_manage"
-            android:title="Tools" />
-        <item
-            android:id="@+id/nav_manage7"
-            android:icon="@android:drawable/ic_menu_manage"
-            android:title="Tools" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@android:drawable/ic_menu_manage"
-            android:title="Tools" />
-
-
+            android:id="@+id/idAnotacoes"
+            android:icon="@drawable/ic_description_black_24dp"
+            android:title="@string/title_anotacoes"
+            android:enabled="true"/>
     </group>
-
-    <item android:title="Communicate">
+    <item android:title="Livros">
         <menu>
             <item
                 android:id="@+id/nav_share"
-                android:icon="@android:drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@android:drawable/ic_menu_send"
-                android:title="Send" />
+                android:title="Share"/>
+
         </menu>
     </item>
-
 </menu>
