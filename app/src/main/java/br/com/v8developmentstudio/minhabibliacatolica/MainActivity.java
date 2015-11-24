@@ -1,6 +1,8 @@
 package br.com.v8developmentstudio.minhabibliacatolica;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GestureDetectorCompat;
@@ -126,8 +128,23 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
+                Toast.makeText(MainActivity.this, menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+                drawer.closeDrawers();
+                Handler handler = new Handler();
+                switch(menuItem.getItemId()) {
+                    case R.id.idFavoritos:
 
-                Toast.makeText(MainActivity.this, menuItem.getTitle(), Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.idAnotacoes:
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                                Intent intent = new Intent(MainActivity.this, AnotacoesActivity.class);
+                                startActivity(intent);
+                                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                            }
+                        }, 400);
+                        break;
+                }
                 return false;
             }
         });

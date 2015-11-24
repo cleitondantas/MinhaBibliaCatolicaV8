@@ -18,6 +18,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".AnotacoesActivity"
+                  android:label="@string/title_anotacoes">
+
+        </activity>
     </application>
 
 </manifest>
