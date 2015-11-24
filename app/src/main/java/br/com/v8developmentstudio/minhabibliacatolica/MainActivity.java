@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 import java.util.ArrayList;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity
     private Animation animeFloating,animeFloating2;
     private int idLivro, idCapitulo;
     private ItemData itemsData[];
+    private NavigationView navigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +80,8 @@ public class MainActivity extends AppCompatActivity
         fabMarkColor3 = (FloatingActionButton) findViewById(R.id.fab_color3);
         animeFloating = AnimationUtils.loadAnimation(this, R.anim.rotate);
         animeFloating2 = AnimationUtils.loadAnimation(this, R.anim.rotate2);
+
+
         final FloatingActionButton[] allFloatingActionButtons = new FloatingActionButton[]{fab2,fab3,fab4,fabMark,fabSublinhe,fabMarkColor1,fabMarkColor2,fabMarkColor3};
         hideAllFab(allFloatingActionButtons);
 
@@ -88,6 +92,8 @@ public class MainActivity extends AppCompatActivity
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         expandableList = (ExpandableListView) findViewById(R.id.id_expandable_listView);
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setHasFixedSize(true);
@@ -114,8 +120,18 @@ public class MainActivity extends AppCompatActivity
         //Instancio a Primeira pagina
         this.idLivro = persistenceDao.getEstadoLivroPreferences();
         this.idCapitulo = persistenceDao.getEstadoCapituloPreferences();
-        itemsData = recuperaVersiculosSelecionados(idLivro,idCapitulo);
+        itemsData = recuperaVersiculosSelecionados(idLivro, idCapitulo);
         createView(recyclerView, itemsData);
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                Toast.makeText(MainActivity.this, menuItem.getTitle(), Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
+
 
 
         recyclerView.setOnScrollListener(new MyRecyclerScroll() {
@@ -187,7 +203,7 @@ public class MainActivity extends AppCompatActivity
         fabMarkColor3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(adapter.getSelectedItems().size()!=0) {
+                if(adapter.getSelectedItems().size() != 0) {
                     realizaMarcacao(R.color.roxo_florecente);
                     moveScroll();
 
@@ -207,7 +223,7 @@ public class MainActivity extends AppCompatActivity
         fabSublinhe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(adapter.getSelectedItems().size()!=0){
+                if (adapter.getSelectedItems().size() != 0) {
                     realizaMarcacaoSublinhado();
                     moveScroll();
                 }
@@ -216,8 +232,8 @@ public class MainActivity extends AppCompatActivity
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+
+
     }
 
     private void moveScroll(){
@@ -350,7 +366,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -368,9 +383,10 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+
+
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         drawer.closeDrawer(GravityCompat.START);
@@ -382,8 +398,6 @@ public class MainActivity extends AppCompatActivity
     public RecyclerView getRecyclerView() {
         return recyclerView;
     }
-
-
 
     public DrawerLayout getDrawer() {
         return drawer;
@@ -413,10 +427,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_delete:
-                List<Integer> selectedItemPositions = adapter.getSelectedItems();
-                for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
 
-                }
                 actionMode.finish();
                 return true;
             default:

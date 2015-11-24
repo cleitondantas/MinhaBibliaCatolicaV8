@@ -1,6 +1,7 @@
 package br.com.v8developmentstudio.minhabibliacatolica.adapter;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 
 import android.text.SpannableString;
@@ -55,6 +56,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         if(itemsData[position].getMarcacao_color() !=null && itemsData[position].getMarcacao_color().length()>0){
             viewHolder.itemView.setBackgroundResource(Integer.parseInt(itemsData[position].getMarcacao_color()));
             viewHolder.txtViewTitle.setTextColor(Color.BLACK);
+           // viewHolder.txtViewTitle.setTypeface(null, Typeface.BOLD);
             controlaSelecao = true;
         }
 

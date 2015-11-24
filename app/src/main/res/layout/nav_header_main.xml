@@ -29,7 +29,6 @@
             android:text="@string/app_name"
             android:textStyle="bold"
             android:textSize="9pt"
-
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
     </RelativeLayout>
 </LinearLayout>

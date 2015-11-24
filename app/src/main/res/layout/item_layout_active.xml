@@ -17,4 +17,5 @@
         android:textColor="@android:color/white"
         android:textIsSelectable="false"
         android:textSize="14sp" />
+
 </RelativeLayout>
