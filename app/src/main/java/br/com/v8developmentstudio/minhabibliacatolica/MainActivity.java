@@ -256,7 +256,7 @@ public class MainActivity extends AppCompatActivity
     private void moveScroll(){
         LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
         if(MyRecyclerScroll.getDisplayedposition()<=itemsData.length){
-            llm.scrollToPositionWithOffset(MyRecyclerScroll.getDisplayedposition(), itemsData.length);
+            llm.scrollToPositionWithOffset(MyRecyclerScroll.getDisplayedposition()+1, itemsData.length);
         }
     }
 
