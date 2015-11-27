@@ -3,7 +3,9 @@ package br.com.v8developmentstudio.minhabibliacatolica.bo;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyAdapter;
 import br.com.v8developmentstudio.minhabibliacatolica.dao.PersistenceDao;
+import br.com.v8developmentstudio.minhabibliacatolica.vo.Capitulo;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemData;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Livro;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Marcacoes;
@@ -20,6 +22,7 @@ public class MainBo {
     private List<Versiculo>  versiculoList;
     private Livro livro;
     private ItemData[] array;
+
     public ItemData[] recuperaVersiculosSelecionados(final PersistenceDao persistenceDao ,final int idLivroSelecionado,final int idCapituloSelecionado,final ArrayList<Livro> livroArrayList){
         livro = livroArrayList.get(idLivroSelecionado-1);//Dou -1 Pois eu passo o id mais ná verdade eu estou pegando em uma lista onde inicia com 0
         titulo = livro.getAbreviacao() + " " + livro.getCapituloList().get(idCapituloSelecionado-1).getTitulo();
@@ -45,5 +48,50 @@ public class MainBo {
     }
     public String getTitle(){
         return titulo;
+    }
+
+    // Método que popula os dados
+    public void populaLivroList(List<Livro> livroArrayList) {
+        Capitulo capitulo;
+        ArrayList<Capitulo> capitulos;
+        for (int c = 0; c < livroArrayList.size(); c++) {
+            capitulos = new ArrayList<>();
+            for (int i = 0; i < livroArrayList.get(c).getQtdCapitulos(); i++) {
+                capitulo = new Capitulo();
+                capitulo.setId(i);
+                capitulo.setTitulo("Capitulo " + (i + 1));
+                capitulos.add(capitulo);
+            }
+            livroArrayList.get(c).setCapituloList(capitulos);
+        }
+    }
+
+    /**
+     * Editor de Marcacoes
+     * Obs se um item é igual a null então se entende que não será atualizado
+     * @param adapter
+     * @param idCapitulo
+     * @param idLivro
+     * @param r_Color
+     * @param favorito
+     * @param sublinhado
+     * @return
+     */
+
+    public List<Marcacoes> marcacoesEdit(MyAdapter adapter,int idLivro,int idCapitulo,Integer r_Color,Boolean favorito,Boolean sublinhado ){
+        Marcacoes marcacoes;
+        List<Marcacoes> marcacoesList = new ArrayList<>();
+        for (Integer versiculo : adapter.getSelectedItems()) {
+            marcacoes = new Marcacoes();
+            marcacoes.setIdNumCap(idCapitulo);
+            marcacoes.setIdLivro(idLivro);
+            marcacoes.setIdVersiculo((versiculo + 1));
+
+            marcacoes.setFavorito(favorito);
+            marcacoes.setSublinhado(sublinhado);
+            marcacoes.setMarcacao_color(Integer.toString(r_Color));
+            marcacoesList.add(marcacoes);
+        }
+        return marcacoesList;
     }
 }

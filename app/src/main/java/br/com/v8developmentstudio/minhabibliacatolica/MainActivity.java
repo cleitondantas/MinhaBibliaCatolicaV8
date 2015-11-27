@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         List<Livro> livroList = persistenceDao.getLivros(persistenceDao.openDB());
         livroArrayList.addAll(livroList);
-        setGroupParents(livroArrayList);
+        mainBo.populaLivroList(livroArrayList);
 
         MyExpandAdapter = new MyExpandableAdapter(livroArrayList, this);
         MyExpandAdapter.setInflater((android.view.LayoutInflater) this.getSystemService(android.content.Context.LAYOUT_INFLATER_SERVICE), this);
@@ -207,7 +207,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 moveScroll();
             }
         });
-
         fabMarkColor2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,7 +216,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         });
-
         fabMarkColor3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -228,7 +226,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         });
-
         fabMark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -247,9 +244,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         });
-
-
-
     }
 
     private void moveScroll(){
@@ -260,18 +254,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void realizaMarcacao(int R_Color){
-        Marcacoes marcacoes;
-        List<Marcacoes> marcacoesList = new ArrayList<>();
-        for (Integer versiculo : adapter.getSelectedItems()) {
-            marcacoes = new Marcacoes();
-            marcacoes.setIdNumCap(idCapitulo);
-            marcacoes.setIdLivro(idLivro);
-            marcacoes.setIdVersiculo((versiculo + 1));
-            marcacoes.setFavorito(false);
-            marcacoes.setMarcacao_color(Integer.toString(R_Color));
-            marcacoesList.add(marcacoes);
-        }
-        persistenceDao.salvarOrUpdateMarcarcoes(idLivro, idCapitulo, marcacoesList);
+
+
+//        Marcacoes marcacoes;
+//        List<Marcacoes> marcacoesList = new ArrayList<>();
+//        for (Integer versiculo : adapter.getSelectedItems()) {
+//            marcacoes = new Marcacoes();
+//            marcacoes.setIdNumCap(idCapitulo);
+//            marcacoes.setIdLivro(idLivro);
+//            marcacoes.setIdVersiculo((versiculo + 1));
+//            marcacoes.setFavorito(false);
+//            marcacoes.setMarcacao_color(Integer.toString(R_Color));
+//            marcacoesList.add(marcacoes);
+//        }
+        persistenceDao.salvarOrUpdateMarcarcoes(idLivro, idCapitulo, mainBo.marcacoesEdit(adapter,idLivro,idCapitulo,R_Color,null,null));
         itemsData = mainBo.recuperaVersiculosSelecionados(persistenceDao,idLivro,idCapitulo,livroArrayList);
         setTitle(mainBo.getTitle());
         createView(recyclerView, itemsData);
@@ -314,22 +310,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
     }
-    // Método que popula os dados
-    public void setGroupParents(List<Livro> livroArrayList) {
-        Capitulo capitulo;
-        ArrayList<Capitulo> capitulos;
-        for (int c = 0; c < livroArrayList.size(); c++) {
-            capitulos = new ArrayList<>();
-            for (int i = 0; i < livroArrayList.get(c).getQtdCapitulos(); i++) {
-                capitulo = new Capitulo();
-                capitulo.setId(i);
-                capitulo.setTitulo("Capitulo " + (i + 1));
-                capitulos.add(capitulo);
 
-            }
-            livroArrayList.get(c).setCapituloList(capitulos);
-        }
-    }
 
     // Cria a visualização da lista
     public void createView(RecyclerView recyclerView, ItemData[] itemsData) {

@@ -1,7 +1,6 @@
 package br.com.v8developmentstudio.minhabibliacatolica.adapter;
 
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 
 import android.text.SpannableString;
