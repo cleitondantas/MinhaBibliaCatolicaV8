@@ -19,7 +19,6 @@ import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemData;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private ItemData[] itemsData;
-
     private SparseBooleanArray selectedItems;
 
 
@@ -35,7 +34,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_layout, null);
         // create ViewHolder
         ViewHolder viewHolder = new ViewHolder(itemLayoutView);
-
         return viewHolder;
     }
 

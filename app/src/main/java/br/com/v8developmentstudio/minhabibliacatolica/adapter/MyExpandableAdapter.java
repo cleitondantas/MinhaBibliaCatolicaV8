@@ -31,14 +31,13 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
     private TextView textView = null;
     private PersistenceDao persistenceDao;
     private int idLivro,idCapitulo;
-
+    private ItemData[] itemsData;
 
     public MyExpandableAdapter(ArrayList<Livro> livros, MainActivity mainActivity) {
         this.livroArrayList = livros;
         this.mainActivity = mainActivity;
         persistenceDao = new PersistenceDao(mainActivity);
     }
-
 
     public void setInflater(LayoutInflater inflater, Activity activity) {
         this.inflater = inflater;
@@ -47,9 +46,11 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-
         childCapitulos = livroArrayList.get(groupPosition).getCapituloList();
+
+        //Posição id do Livro e do Capitulo selecionado
         idLivro = livroArrayList.get(groupPosition).getId();
+
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.group, null);
         }
@@ -61,15 +62,16 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View view) {
                 Toast.makeText(activity,livroArrayList.get(groupPosition).getTituloLivro() +" "+ childCapitulos.get(childPosition).getTitulo(), Toast.LENGTH_SHORT).show();
+
                 idCapitulo = childCapitulos.get(childPosition).getId();
-                ItemData[] itemsData =  mainActivity.recuperaVersiculosSelecionados(idLivro,(idCapitulo+1));
+                mainActivity.setIdLivro(idLivro);
+                mainActivity.setIdCapitulo((idCapitulo+1));
+
                 persistenceDao.salvarEstadoPreferences(idLivro, (idCapitulo+1));
+                itemsData = mainActivity.getMainBo().recuperaVersiculosSelecionados(persistenceDao, idLivro, (idCapitulo + 1), livroArrayList);
                 mainActivity.createView(mainActivity.getRecyclerView(), itemsData);
 
-
-                mainActivity.setTituloActionBar(livroArrayList.get(groupPosition).getAbreviacao() +" "+ childCapitulos.get(childPosition).getTitulo());
-                activity.setTitle(mainActivity.getTituloActionBar());
-
+                activity.setTitle(livroArrayList.get(groupPosition).getAbreviacao() +" "+ childCapitulos.get(childPosition).getTitulo());
                 mainActivity.getDrawer().closeDrawers();
             }
         });

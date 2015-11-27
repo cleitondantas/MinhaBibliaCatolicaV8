@@ -16,14 +16,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 import java.util.ArrayList;
@@ -34,22 +32,20 @@ import static android.view.GestureDetector.SimpleOnGestureListener;
 import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyAdapter;
 import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyExpandableAdapter;
 import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyRecyclerScroll;
+import br.com.v8developmentstudio.minhabibliacatolica.bo.MainBo;
 import br.com.v8developmentstudio.minhabibliacatolica.dao.PersistenceDao;
+import br.com.v8developmentstudio.minhabibliacatolica.activity.AnotacoesActivity;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Capitulo;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemData;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Livro;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Marcacoes;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.RelacLivroCap;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.Versiculo;
 
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener ,RecyclerView.OnItemTouchListener, View.OnClickListener,  ActionMode.Callback {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener ,RecyclerView.OnItemTouchListener, View.OnClickListener {
 
     private ArrayList<Livro> livroArrayList = new ArrayList<>();
 
 
-    private String tituloActionBar;
     private RecyclerView recyclerView;
     private ExpandableListView expandableList;
     private MyExpandableAdapter MyExpandAdapter;
@@ -58,11 +54,13 @@ public class MainActivity extends AppCompatActivity
     private GestureDetectorCompat gestureDetector;
     private MyAdapter adapter =null;
     private PersistenceDao persistenceDao = new PersistenceDao(this);
-    private  FloatingActionButton fab,fab2,fab3,fab4,fabMark,fabSublinhe,fabMarkColor1,fabMarkColor2,fabMarkColor3;
+    private FloatingActionButton fab,fab2,fab3,fab4,fabMark,fabSublinhe,fabMarkColor1,fabMarkColor2,fabMarkColor3;
+    private FloatingActionButton[] allFloatingActionButtons;
     private Animation animeFloating,animeFloating2;
     private int idLivro, idCapitulo;
     private ItemData itemsData[];
     private NavigationView navigationView;
+    private MainBo mainBo = new MainBo();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +69,11 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         // Instancia as Variaveis
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        expandableList = (ExpandableListView) findViewById(R.id.id_expandable_listView);
+        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+
         fab =  (FloatingActionButton) findViewById(R.id.fab);
         fab2 = (FloatingActionButton) findViewById(R.id.fab2);
         fab3 = (FloatingActionButton) findViewById(R.id.fab3);
@@ -82,20 +85,17 @@ public class MainActivity extends AppCompatActivity
         fabMarkColor3 = (FloatingActionButton) findViewById(R.id.fab_color3);
         animeFloating = AnimationUtils.loadAnimation(this, R.anim.rotate);
         animeFloating2 = AnimationUtils.loadAnimation(this, R.anim.rotate2);
-
-
-        final FloatingActionButton[] allFloatingActionButtons = new FloatingActionButton[]{fab2,fab3,fab4,fabMark,fabSublinhe,fabMarkColor1,fabMarkColor2,fabMarkColor3};
+        allFloatingActionButtons = new FloatingActionButton[]{fab2,fab3,fab4,fabMark,fabSublinhe,fabMarkColor1,fabMarkColor2,fabMarkColor3};
+        //Da um Hide em todos os elementos
         hideAllFab(allFloatingActionButtons);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         layoutManager.scrollToPosition(0);
-
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        expandableList = (ExpandableListView) findViewById(R.id.id_expandable_listView);
-        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setHasFixedSize(true);
@@ -122,7 +122,9 @@ public class MainActivity extends AppCompatActivity
         //Instancio a Primeira pagina
         this.idLivro = persistenceDao.getEstadoLivroPreferences();
         this.idCapitulo = persistenceDao.getEstadoCapituloPreferences();
-        itemsData = recuperaVersiculosSelecionados(idLivro, idCapitulo);
+
+        itemsData = mainBo.recuperaVersiculosSelecionados(persistenceDao,idLivro,idCapitulo,livroArrayList);
+        setTitle(mainBo.getTitle());
         createView(recyclerView, itemsData);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -131,7 +133,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(MainActivity.this, menuItem.getTitle(), Toast.LENGTH_SHORT).show();
                 drawer.closeDrawers();
                 Handler handler = new Handler();
-                switch(menuItem.getItemId()) {
+                switch (menuItem.getItemId()) {
                     case R.id.idFavoritos:
 
                         break;
@@ -152,7 +154,6 @@ public class MainActivity extends AppCompatActivity
 
 
         recyclerView.setOnScrollListener(new MyRecyclerScroll() {
-
             @Override
             public void show() {
                 fab.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
@@ -231,7 +232,7 @@ public class MainActivity extends AppCompatActivity
         fabMark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(adapter.getSelectedItems().size()!=0){
+                if (adapter.getSelectedItems().size() != 0) {
                     deletaMarcaoes();
                     moveScroll();
                 }
@@ -246,9 +247,7 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+
 
 
     }
@@ -256,7 +255,7 @@ public class MainActivity extends AppCompatActivity
     private void moveScroll(){
         LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
         if(MyRecyclerScroll.getDisplayedposition()<=itemsData.length){
-            llm.scrollToPositionWithOffset(MyRecyclerScroll.getDisplayedposition()+1, itemsData.length);
+            llm.scrollToPositionWithOffset((MyRecyclerScroll.getDisplayedposition()+1), itemsData.length);
         }
     }
 
@@ -267,13 +266,14 @@ public class MainActivity extends AppCompatActivity
             marcacoes = new Marcacoes();
             marcacoes.setIdNumCap(idCapitulo);
             marcacoes.setIdLivro(idLivro);
-            marcacoes.setIdVersiculo((versiculo+1));
+            marcacoes.setIdVersiculo((versiculo + 1));
             marcacoes.setFavorito(false);
             marcacoes.setMarcacao_color(Integer.toString(R_Color));
             marcacoesList.add(marcacoes);
         }
         persistenceDao.salvarOrUpdateMarcarcoes(idLivro, idCapitulo, marcacoesList);
-        itemsData = recuperaVersiculosSelecionados(idLivro, idCapitulo);
+        itemsData = mainBo.recuperaVersiculosSelecionados(persistenceDao,idLivro,idCapitulo,livroArrayList);
+        setTitle(mainBo.getTitle());
         createView(recyclerView, itemsData);
     }
     public void realizaMarcacaoSublinhado(){
@@ -289,7 +289,8 @@ public class MainActivity extends AppCompatActivity
         }
         persistenceDao.salvarOrUpdateMarcarcoes(idLivro, idCapitulo, marcacoesList);
 
-        itemsData = recuperaVersiculosSelecionados(idLivro, idCapitulo);
+        itemsData = mainBo.recuperaVersiculosSelecionados(persistenceDao,idLivro,idCapitulo,livroArrayList);
+        setTitle(mainBo.getTitle());
         createView(recyclerView, itemsData);
     }
     public void deletaMarcaoes(){
@@ -297,9 +298,10 @@ public class MainActivity extends AppCompatActivity
         for (int i=0;i<adapter.getSelectedItems().size();i++) {
             vers[i] = (adapter.getSelectedItems().get(i)+1);
         }
-        persistenceDao.deletMarcacoes(persistenceDao.openDB(),idLivro,idCapitulo,vers);
+        persistenceDao.deletMarcacoes(persistenceDao.openDB(), idLivro, idCapitulo, vers);
 
-        itemsData = recuperaVersiculosSelecionados(idLivro, idCapitulo);
+        itemsData = mainBo.recuperaVersiculosSelecionados(persistenceDao,idLivro,idCapitulo,livroArrayList);
+        setTitle(mainBo.getTitle());
         createView(recyclerView, itemsData);
     }
 
@@ -308,7 +310,7 @@ public class MainActivity extends AppCompatActivity
         String title = getString(R.string.selected_count, adapter.getSelectedItemCount());
         setTitle(title);
         if(adapter.getSelectedItemCount()==0){
-            setTitle(tituloActionBar);
+            setTitle(mainBo.getTitle());
         }
 
     }
@@ -331,8 +333,6 @@ public class MainActivity extends AppCompatActivity
 
     // Cria a visualização da lista
     public void createView(RecyclerView recyclerView, ItemData[] itemsData) {
-
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MyAdapter(itemsData);
         recyclerView.setAdapter(adapter);
@@ -341,31 +341,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public ItemData[] recuperaVersiculosSelecionados(final int idLivroSelecionado,final int idCapituloSelecionado){
-        this.idLivro = idLivroSelecionado;
-        this.idCapitulo =idCapituloSelecionado;
-        Livro livro = livroArrayList.get(idLivroSelecionado-1);//Dou -1 Pois eu passo o id mais ná verdade eu estou pegando em uma lista onde inicia com 0
-        tituloActionBar=livro.getAbreviacao() + " " + livro.getCapituloList().get(idCapituloSelecionado-1).getTitulo();
-        setTitle(tituloActionBar);
-        List<Marcacoes>  marcacoesList=  persistenceDao.recuperaMarcacoes(persistenceDao.openDB(), livro.getId(), idCapituloSelecionado);
-        RelacLivroCap relacLivroCap = persistenceDao.getRelacLivroCap(persistenceDao.openDB(), livro.getId(),idCapituloSelecionado);
-        List<Versiculo>  versiculoList =  persistenceDao.getCapitulos(persistenceDao.openDB(), relacLivroCap.getNome_tabela());
-
-        ItemData[] array = new ItemData[versiculoList.size()];
-
-        for (int i=0;i < versiculoList.size();i++){
-            array[i]= new ItemData();
-            for (int x=0;x < marcacoesList.size();x++){
-                if(marcacoesList.get(x).getIdVersiculo()==(i+1)){
-                    array[i].setFavorito(marcacoesList.get(x).getFavorito());
-                    array[i].setSublinhado(marcacoesList.get(x).getSublinhado());
-                    array[i].setMarcacao_color(marcacoesList.get(x).getMarcacao_color());
-                }
-            }
-            array[i].setTexto((i+1)+") "+ versiculoList.get(i).getTexto());
-        }
-        return array;
-    }
 
     @Override
     public void onBackPressed() {
@@ -374,7 +349,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             if(adapter.getSelectedItemCount()!=0){
                 adapter.clearSelections();
-                setTitle(tituloActionBar);
+                setTitle(mainBo.getTitle());
                 return;
             }
             super.onBackPressed();
@@ -402,8 +377,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-
-
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         drawer.closeDrawer(GravityCompat.START);
@@ -411,60 +384,11 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    // Métodos do Import
-    public RecyclerView getRecyclerView() {
-        return recyclerView;
-    }
-
-    public DrawerLayout getDrawer() {
-        return drawer;
-    }
-
-    public String getTituloActionBar() {
-        return tituloActionBar;
-    }
-
-    public void setTituloActionBar(String tituloActionBar) {
-        this.tituloActionBar = tituloActionBar;
-    }
-    @Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        // Inflate a menu resource providing context menu items
-        MenuInflater inflater = actionMode.getMenuInflater();
-        inflater.inflate(R.menu.menu_cab_delete, menu);
-        return false;
-    }
-
-    @Override
-    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        return false;
-    }
-
-    @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_delete:
-
-                actionMode.finish();
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode mode) {
-
-        adapter.clearSelections();
-    }
-
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.action_bar) {
-            // fab click
-            //addItemToList();
+
         } else if (v.getId() == R.id.container_list_item) {
-            // item click
             int idx = recyclerView.getChildAdapterPosition(v);
             if (adapter.getSelectedItemCount() >0) {
                 myToggleSelection(idx);
@@ -486,7 +410,38 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    // Métodos do Import
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
+    }
+
+    public DrawerLayout getDrawer() {
+        return drawer;
+    }
+
+
+    public MainBo getMainBo() {
+        return mainBo;
+    }
+
+    //Métodos de Apoio
+
+    /**
+     *  Chama o Hide de todos dos FloatingActionButton Passados
+     */
+    private void hideAllFab(FloatingActionButton... fabsArray){
+        for (int i=0;i<fabsArray.length;i++){
+            fabsArray[i].hide();
+        }
+    }
+
+    private void showAllFab(FloatingActionButton... fabsArray){
+        for (int i=0;i<fabsArray.length;i++){
+            fabsArray[i].show();
+        }
+    }
     private class RecyclerViewOnGestureListener extends SimpleOnGestureListener{
+
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
@@ -510,23 +465,19 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
-    //Métodos de Apoio
-
-    /**
-     *  Chama o Hide de todos dos FloatingActionButton Passados
-     */
-    private void hideAllFab(FloatingActionButton... fabsArray){
-        for (int i=0;i<fabsArray.length;i++){
-            fabsArray[i].hide();
-        }
+    public int getIdLivro() {
+        return idLivro;
     }
-    /**
-     *
-     */
-    private void showAllFab(FloatingActionButton... fabsArray){
-        for (int i=0;i<fabsArray.length;i++){
-            fabsArray[i].show();
-        }
+
+    public void setIdLivro(int idLivro) {
+        this.idLivro = idLivro;
+    }
+
+    public int getIdCapitulo() {
+        return idCapitulo;
+    }
+
+    public void setIdCapitulo(int idCapitulo) {
+        this.idCapitulo = idCapitulo;
     }
 }

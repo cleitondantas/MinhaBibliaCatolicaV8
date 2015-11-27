@@ -34,17 +34,11 @@ public class PersistenceDao extends SQLiteOpenHelper{
     private static final String COLUMN_TITULO_LIVRO = "TITULOLIVRO";
     private static final String COLUMN_ABREVIACAO = "ABREVIACAO";
     private static final String COLUMN_QTDCAPITULOS = "QTDCAPITULOS";
-
     private static final String TABLE_RELAC_LIVRO_CAP = "TB_RELAC_LIVRO_CAP";
     private static final String COLUMN_IDLIVRO = "IDLIVRO";
     private static final String COLUMN_IDNUMCAP = "IDNUMCAP";
     private static final String COLUMN_NOME_TABELA = "NOME_TABELA";
-
     private static final String COLUMN_VERSICULO = "VER";
-
-    private static final String TABLE_FAVORITOS = "FAVORITOS";
-    private static final String COLUMN_IDORACAO = "IDORACAO";
-
     private static final String TABLE_MARCACOES = "MARCACOES";
     private static final String COLUMN_SUBLINHADO ="SUBLINHADO";
     private static final String COLUMN_MARCACAO_COLOR ="MARCACAO_COLOR";
@@ -55,6 +49,7 @@ public class PersistenceDao extends SQLiteOpenHelper{
     private static final int VERSAO =1;
     public static SQLiteDatabase bancoDados = null;
     private static Context contextStatic;
+
     public PersistenceDao(Context context) {
         super(context, DATABASE_NAME, null, VERSAO);
         contextStatic =context;
@@ -64,18 +59,9 @@ public class PersistenceDao extends SQLiteOpenHelper{
             instance = new PersistenceDao(context);
         return instance;
     }
-    /**
-     * Verifica a existencia do banco de dados
-     *
-     * @param bancoDados
-     * @return
-     */
-    public boolean verificaBancoExistente(SQLiteDatabase bancoDados){
-        cursor = bancoDados.query(TABLE_LIVROS, new String[]{COLUMN_ID}, null,null,null,null,null);
-        return cursor.getCount() > 2;
-    }
 
     /**
+     * Recupera o relacionamento dos livros pelo id do livro e o numero do capitulo
      */
     public RelacLivroCap getRelacLivroCap(SQLiteDatabase bancoDados,int idLivro,int idNumCap){
         String query =  COLUMN_IDLIVRO+" = ? AND "+COLUMN_IDNUMCAP +" = ?";
@@ -113,7 +99,7 @@ public class PersistenceDao extends SQLiteOpenHelper{
         bancoDados.close();
         return livroArrayList;
     }
-//
+
     /**
      * Metodo Busca os titulos e Lista para ler na view
      */
@@ -161,6 +147,14 @@ public class PersistenceDao extends SQLiteOpenHelper{
         bancoDados.close();
         return  marcacoesArrayList;
     }
+
+    /**
+     * Método que Deleta as marcações selecionadas no texto
+     * @param bancoDados
+     * @param idLivro
+     * @param idNumCap
+     * @param idsVersiculos
+     */
     public void deletMarcacoes(SQLiteDatabase bancoDados,int idLivro,int idNumCap,Integer... idsVersiculos){
         for (Integer idVersiculo:idsVersiculos) {
             String query = COLUMN_IDLIVRO + " = ? AND " + COLUMN_IDNUMCAP + " = ? AND " + COLUMN_VERSICULO + " = ?";
@@ -172,6 +166,12 @@ public class PersistenceDao extends SQLiteOpenHelper{
 
     }
 
+    /**
+     * Salva ou Atualiza as Marcações dos textos selecionados
+     * @param idLivro
+     * @param idNumCap
+     * @param marcacoes
+     */
     public void salvarOrUpdateMarcarcoes(int idLivro,int idNumCap, List<Marcacoes> marcacoes){
        List<Marcacoes> marcacoesExistentes = recuperaMarcacoes(this.openDB(),idLivro,idNumCap);
         this.openDB();
@@ -213,65 +213,23 @@ public class PersistenceDao extends SQLiteOpenHelper{
 
 
     /**
-     * Metodo Cria o conteudo do banco de dados apartir das linas do arquivo de SQL com InputStrem
-
-     */
-    public void criaConteudo(InputStream input,final SQLiteDatabase openDB) {
-        try {
-            byFile(input,openDB);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    protected void byFile(int fileID, SQLiteDatabase bd) throws IOException {
-        StringBuilder sql = new StringBuilder();
-        BufferedReader br = new BufferedReader(new InputStreamReader(contextStatic.getResources().openRawResource(fileID)));
-        String line;
-        while ((line = br.readLine()) != null) {
-            line = line.trim();
-            if (line.length() > 0) {
-                sql.append(line);
-                if (line.endsWith(";")) {
-                    bd.execSQL(sql.toString());
-                    sql.delete(0, sql.length());
-                }
-            }
-        }
-    }
-    protected void byFile(InputStream input, SQLiteDatabase bd) throws IOException {
-        StringBuilder sql = new StringBuilder();
-        BufferedReader br = new BufferedReader(new InputStreamReader(input));
-        String line;
-        while ((line = br.readLine()) != null) {
-            line = line.trim();
-            if (line.length() > 0) {
-                sql.append(line);
-                if (line.endsWith(";")) {
-                    bd.execSQL(sql.toString());
-                    sql.delete(0, sql.length());
-                }
-            }
-        }
-    }
-
-    /**
      * Cria o banco de dados se não existe
      * @param bancoDados
      */
     @Override
     public void onCreate(SQLiteDatabase bancoDados) {
-
         bancoDados.close();
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase bancoDados, int oldVersion, int newVersion) {
-
         onCreate(bancoDados);
     }
 
+    /**
+     * Abre conexao
+     * @return
+     */
     public SQLiteDatabase openDB(){
         try{
             bancoDados = contextStatic.openOrCreateDatabase(PersistenceDao.DATABASE_NAME, Context.MODE_WORLD_READABLE, null);
@@ -280,6 +238,10 @@ public class PersistenceDao extends SQLiteOpenHelper{
         return bancoDados;
     }
 
+    /**
+     * Abre conexao
+     * @return
+     */
     public SQLiteDatabase openDB(Context context){
         try{
             bancoDados = context.openOrCreateDatabase(PersistenceDao.DATABASE_NAME, Context.MODE_WORLD_READABLE, null);
@@ -296,7 +258,6 @@ public class PersistenceDao extends SQLiteOpenHelper{
         try {
             // Abre o arquivo que deve estar na pasta assets
             is = contextStatic.getAssets().open(dataBaseName);
-
             // Abre o arquivo do banco vazio ele fica em:
             // /data/data/nome.do.pacote.da.app/databases
             fos = new FileOutputStream(contextStatic.getDatabasePath(dataBaseName));
@@ -317,27 +278,12 @@ public class PersistenceDao extends SQLiteOpenHelper{
         return contextStatic.getDatabasePath(dataBaseName).delete();
     }
 
-    // Método para criacao de tabelas
-    public void criatabelas(SQLiteDatabase bancoDados){
 
-        cursor = bancoDados.query(TABLE_RELAC_LIVRO_CAP, null,null,null,null,null,null);
-        List<RelacLivroCap> relacLivroCapList = new ArrayList<>();
-        RelacLivroCap relacLivroCap =null;
-        while(cursor.moveToNext()){
-            relacLivroCap = new RelacLivroCap();
-            relacLivroCap.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
-            relacLivroCap.setNome_tabela(cursor.getString(cursor.getColumnIndex(COLUMN_NOME_TABELA)));
-            relacLivroCapList.add(relacLivroCap);
-        }
-        for (RelacLivroCap cp:relacLivroCapList){
-            bancoDados.execSQL("CREATE TABLE IF NOT EXISTS "+cp.getNome_tabela() + " ( ID  INTEGER PRIMARY KEY,VER TEXT );");
-        }
-
-        bancoDados.close();
-
-    }
-
-
+    /**
+     * Sava as preferencias em um arquivo de Preferences interno do Android
+     * @param idLivro
+     * @param idCapitulo
+     */
     public void salvarEstadoPreferences(int idLivro,int idCapitulo){
         SharedPreferences settings = contextStatic.getSharedPreferences("Preferences", 0);
         SharedPreferences.Editor editor = settings.edit();
