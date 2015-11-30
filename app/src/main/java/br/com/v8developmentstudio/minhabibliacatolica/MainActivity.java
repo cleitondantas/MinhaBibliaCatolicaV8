@@ -254,19 +254,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void realizaMarcacao(int R_Color){
-
-
-//        Marcacoes marcacoes;
-//        List<Marcacoes> marcacoesList = new ArrayList<>();
-//        for (Integer versiculo : adapter.getSelectedItems()) {
-//            marcacoes = new Marcacoes();
-//            marcacoes.setIdNumCap(idCapitulo);
-//            marcacoes.setIdLivro(idLivro);
-//            marcacoes.setIdVersiculo((versiculo + 1));
-//            marcacoes.setFavorito(false);
-//            marcacoes.setMarcacao_color(Integer.toString(R_Color));
-//            marcacoesList.add(marcacoes);
-//        }
         persistenceDao.salvarOrUpdateMarcarcoes(idLivro, idCapitulo, mainBo.marcacoesEdit(adapter,idLivro,idCapitulo,R_Color,null,null));
         itemsData = mainBo.recuperaVersiculosSelecionados(persistenceDao,idLivro,idCapitulo,livroArrayList);
         setTitle(mainBo.getTitle());
