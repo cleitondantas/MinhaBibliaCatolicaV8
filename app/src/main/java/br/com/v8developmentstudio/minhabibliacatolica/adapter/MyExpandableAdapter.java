@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckedTextView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +20,7 @@ import br.com.v8developmentstudio.minhabibliacatolica.vo.Capitulo;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemData;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Livro;
 
-public class MyExpandableAdapter extends BaseExpandableListAdapter {
+public class MyExpandableAdapter extends CustomBaseExpandableListAdapter {
 
     private Activity activity;
     private LayoutInflater inflater;
@@ -62,7 +61,6 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View view) {
                 Toast.makeText(activity,livroArrayList.get(groupPosition).getTituloLivro() +" "+ childCapitulos.get(childPosition).getTitulo(), Toast.LENGTH_SHORT).show();
-
                 idCapitulo = childCapitulos.get(childPosition).getId();
                 mainActivity.setIdLivro(idLivro);
                 mainActivity.setIdCapitulo((idCapitulo+1));
@@ -88,55 +86,15 @@ public class MyExpandableAdapter extends BaseExpandableListAdapter {
         return convertView;
     }
 
-
-    @Override
-    public Object getChild(int groupPosition, int childPosition) {
-        return null;
-    }
-
-    @Override
-    public long getChildId(int groupPosition, int childPosition) {
-        return 0;
-    }
-
     @Override
     public int getChildrenCount(int groupPosition) {
         return  livroArrayList.get(groupPosition).getCapituloList().size();
     }
 
     @Override
-    public Object getGroup(int groupPosition) {
-        return null;
-    }
-
-    @Override
     public int getGroupCount() {
+
         return livroArrayList.size();
-    }
-
-    @Override
-    public void onGroupCollapsed(int groupPosition) {
-        super.onGroupCollapsed(groupPosition);
-    }
-
-    @Override
-    public void onGroupExpanded(int groupPosition) {
-        super.onGroupExpanded(groupPosition);
-    }
-
-    @Override
-    public long getGroupId(int groupPosition) {
-        return 0;
-    }
-
-    @Override
-    public boolean hasStableIds() {
-        return false;
-    }
-
-    @Override
-    public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return false;
     }
 
 }

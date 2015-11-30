@@ -367,31 +367,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    @Override
-    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-        gestureDetector.onTouchEvent(e);
-        return false;
-    }
-
-    @Override
-    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-    }
-
-    // Métodos do Import
-    public RecyclerView getRecyclerView() {
-        return recyclerView;
-    }
-
-    public DrawerLayout getDrawer() {
-        return drawer;
-    }
-
-
-    public MainBo getMainBo() {
-        return mainBo;
-    }
-
     //Métodos de Apoio
 
     /**
@@ -420,17 +395,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         public void onLongPress(MotionEvent e) {
             View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
-            if (adapter.getSelectedItemCount()>0) {
-                Toast.makeText(MainActivity.this,"Selecione com Click Simples", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            // Start the CAB using the ActionMode.Callback defined above
-
+            fab.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
             int idx = recyclerView.getChildAdapterPosition(view);
             myToggleSelection(idx);
             super.onLongPress(e);
         }
+    }
 
+    @Override
+    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+        gestureDetector.onTouchEvent(e);
+        return false;
+    }
+
+    @Override
+    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+    }
+
+    // Métodos do Import
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
+    }
+
+    public DrawerLayout getDrawer() {
+        return drawer;
+    }
+
+    public MainBo getMainBo() {
+        return mainBo;
     }
 
     public int getIdLivro() {
