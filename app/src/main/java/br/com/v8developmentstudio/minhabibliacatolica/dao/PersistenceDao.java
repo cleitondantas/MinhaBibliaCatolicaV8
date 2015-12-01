@@ -20,6 +20,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 
+import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemFavorito;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Livro;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Marcacoes;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.RelacLivroCap;
@@ -210,6 +211,29 @@ public class PersistenceDao extends SQLiteOpenHelper{
         bancoDados.close();
     }
 
+    public List<ItemFavorito> recuperaListaFavoritos(SQLiteDatabase bancoDados){
+        List<Marcacoes> marcacoesArrayList = new ArrayList<>();
+
+        String query =  COLUMN_FAVORITO+" = ?";
+        String[] args = {""+true};
+        String[] columns = new String[]{COLUMN_ID,COLUMN_IDLIVRO,COLUMN_IDNUMCAP,COLUMN_VERSICULO,COLUMN_SUBLINHADO,COLUMN_MARCACAO_COLOR,COLUMN_FAVORITO};
+        cursor = bancoDados.query(TABLE_MARCACOES,columns,query,args,null,null,null);
+        Marcacoes marcacoes =null;
+        while(cursor.moveToNext()){
+            marcacoes = new Marcacoes();
+            marcacoes.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
+            marcacoes.setIdLivro(cursor.getInt(cursor.getColumnIndex(COLUMN_IDLIVRO)));
+            marcacoes.setIdNumCap(cursor.getInt(cursor.getColumnIndex(COLUMN_IDNUMCAP)));
+            marcacoes.setIdVersiculo(cursor.getInt(cursor.getColumnIndex(COLUMN_VERSICULO)));
+            marcacoes.setSublinhado(cursor.getInt(cursor.getColumnIndex(COLUMN_SUBLINHADO)) > 0);
+            marcacoes.setMarcacao_color(cursor.getInt(cursor.getColumnIndex(COLUMN_MARCACAO_COLOR)));
+            marcacoes.setFavorito(cursor.getInt(cursor.getColumnIndex(COLUMN_FAVORITO)) > 0);
+            marcacoesArrayList.add(marcacoes);
+        }
+        bancoDados.close();
+        return null;
+    }
+
 
     /**
      * Cria o banco de dados se não existe
@@ -269,6 +293,7 @@ public class PersistenceDao extends SQLiteOpenHelper{
             e.printStackTrace();
         }
     }
+
 
     public boolean getExiteBase(String dataBaseName){
         return contextStatic.getDatabasePath(dataBaseName).exists();

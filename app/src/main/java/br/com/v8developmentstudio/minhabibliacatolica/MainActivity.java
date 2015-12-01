@@ -29,6 +29,7 @@ import java.util.List;
 import  android.view.animation.Animation;
 import static android.view.GestureDetector.SimpleOnGestureListener;
 
+import br.com.v8developmentstudio.minhabibliacatolica.activity.FavoritosActivity;
 import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyAdapter;
 import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyExpandableAdapter;
 import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyRecyclerScroll;
@@ -136,7 +137,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Handler handler = new Handler();
                 switch (menuItem.getItemId()) {
                     case R.id.idFavoritos:
-
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                                Intent intent = new Intent(MainActivity.this, FavoritosActivity.class);
+                                startActivity(intent);
+                                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                            }
+                        }, 400);
                         break;
                     case R.id.idAnotacoes:
                         handler.postDelayed(new Runnable() {
@@ -337,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return;
         }
         Toast.makeText(this,R.string.favorito_salvo, Toast.LENGTH_SHORT).show();
-        persistenceDao.salvarOrUpdateMarcarcoes(idLivro, idCapitulo, mainBo.marcacoesEdit(adapter,idLivro,idCapitulo,null,true,null));
+        persistenceDao.salvarOrUpdateMarcarcoes(idLivro, idCapitulo, mainBo.marcacoesEdit(adapter, idLivro, idCapitulo, null, true, null));
         itemsData = mainBo.recuperaVersiculosSelecionados(persistenceDao,idLivro,idCapitulo,livroArrayList);
         setTitle(mainBo.getTitle());
         createView(recyclerView, itemsData);
