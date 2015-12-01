@@ -89,7 +89,11 @@ public class MainBo {
 
             marcacoes.setFavorito(favorito);
             marcacoes.setSublinhado(sublinhado);
-            marcacoes.setMarcacao_color(Integer.toString(r_Color));
+            if(r_Color==null) {
+                marcacoes.setMarcacao_color(null);
+            }else{
+                marcacoes.setMarcacao_color(r_Color);
+            }
             marcacoesList.add(marcacoes);
         }
         return marcacoesList;

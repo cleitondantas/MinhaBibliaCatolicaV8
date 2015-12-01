@@ -9,7 +9,7 @@ public class Marcacoes {
     private int idNumCap;
     private int idVersiculo;
     private Boolean sublinhado;
-    private String marcacao_color;
+    private Integer marcacao_color;
     private Boolean favorito;
 
 
@@ -53,11 +53,11 @@ public class Marcacoes {
         this.sublinhado = sublinhado;
     }
 
-    public String getMarcacao_color() {
+    public Integer getMarcacao_color() {
         return marcacao_color;
     }
 
-    public void setMarcacao_color(String marcacao_color) {
+    public void setMarcacao_color(Integer marcacao_color) {
         this.marcacao_color = marcacao_color;
     }
 

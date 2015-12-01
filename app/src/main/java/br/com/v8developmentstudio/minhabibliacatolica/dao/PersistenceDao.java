@@ -140,7 +140,7 @@ public class PersistenceDao extends SQLiteOpenHelper{
             marcacoes.setIdNumCap(idNumCap);
             marcacoes.setIdVersiculo(cursor.getInt(cursor.getColumnIndex(COLUMN_VERSICULO)));
             marcacoes.setSublinhado(cursor.getInt(cursor.getColumnIndex(COLUMN_SUBLINHADO)) > 0);
-            marcacoes.setMarcacao_color(cursor.getString(cursor.getColumnIndex(COLUMN_MARCACAO_COLOR)));
+            marcacoes.setMarcacao_color(cursor.getInt(cursor.getColumnIndex(COLUMN_MARCACAO_COLOR)));
             marcacoes.setFavorito(cursor.getInt(cursor.getColumnIndex(COLUMN_FAVORITO)) > 0);
             marcacoesArrayList.add(marcacoes);
         }
@@ -163,7 +163,6 @@ public class PersistenceDao extends SQLiteOpenHelper{
             bancoDados.delete(TABLE_MARCACOES, query, args);
         }
         bancoDados.close();
-
     }
 
     /**

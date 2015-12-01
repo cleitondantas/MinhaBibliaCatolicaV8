@@ -35,7 +35,7 @@ public class MyExpandableAdapter extends CustomBaseExpandableListAdapter {
     public MyExpandableAdapter(ArrayList<Livro> livros, MainActivity mainActivity) {
         this.livroArrayList = livros;
         this.mainActivity = mainActivity;
-        persistenceDao = new PersistenceDao(mainActivity);
+        persistenceDao = mainActivity.getPersistenceDao();
     }
 
     public void setInflater(LayoutInflater inflater, Activity activity) {
@@ -93,7 +93,6 @@ public class MyExpandableAdapter extends CustomBaseExpandableListAdapter {
 
     @Override
     public int getGroupCount() {
-
         return livroArrayList.size();
     }
 

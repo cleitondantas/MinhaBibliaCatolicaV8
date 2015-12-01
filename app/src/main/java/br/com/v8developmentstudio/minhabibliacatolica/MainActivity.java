@@ -35,17 +35,13 @@ import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyRecyclerScroll;
 import br.com.v8developmentstudio.minhabibliacatolica.bo.MainBo;
 import br.com.v8developmentstudio.minhabibliacatolica.dao.PersistenceDao;
 import br.com.v8developmentstudio.minhabibliacatolica.activity.AnotacoesActivity;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.Capitulo;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemData;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Livro;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.Marcacoes;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener ,RecyclerView.OnItemTouchListener, View.OnClickListener {
 
     private ArrayList<Livro> livroArrayList = new ArrayList<>();
-
-
     private RecyclerView recyclerView;
     private ExpandableListView expandableList;
     private MyExpandableAdapter MyExpandAdapter;
@@ -54,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private GestureDetectorCompat gestureDetector;
     private MyAdapter adapter =null;
     private PersistenceDao persistenceDao = new PersistenceDao(this);
-    private FloatingActionButton fab,fab2,fab3,fab4,fabMark,fabSublinhe,fabMarkColor1,fabMarkColor2,fabMarkColor3;
+    private FloatingActionButton fab,fab2, fabFavorito,fab4,fabMark,fabSublinhe,fabMarkColor1,fabMarkColor2,fabMarkColor3,fabVoltarCap,fabAvancaCap;
     private FloatingActionButton[] allFloatingActionButtons;
     private Animation animeFloating,animeFloating2;
     private int idLivro, idCapitulo;
@@ -76,16 +72,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         fab =  (FloatingActionButton) findViewById(R.id.fab);
         fab2 = (FloatingActionButton) findViewById(R.id.fab2);
-        fab3 = (FloatingActionButton) findViewById(R.id.fab3);
+        fabFavorito = (FloatingActionButton) findViewById(R.id.fab_favorito);
         fab4 = (FloatingActionButton) findViewById(R.id.fab4);
         fabMark = (FloatingActionButton) findViewById(R.id.fab_mark);
         fabSublinhe = (FloatingActionButton) findViewById(R.id.fab_sublinhe);
         fabMarkColor1 = (FloatingActionButton) findViewById(R.id.fab_color1);
         fabMarkColor2 = (FloatingActionButton) findViewById(R.id.fab_color2);
         fabMarkColor3 = (FloatingActionButton) findViewById(R.id.fab_color3);
+
+        fabVoltarCap = (FloatingActionButton) findViewById(R.id.fab_avancar_cap);
+        fabAvancaCap = (FloatingActionButton) findViewById(R.id.fab_voltar_cap);
+
         animeFloating = AnimationUtils.loadAnimation(this, R.anim.rotate);
         animeFloating2 = AnimationUtils.loadAnimation(this, R.anim.rotate2);
-        allFloatingActionButtons = new FloatingActionButton[]{fab2,fab3,fab4,fabMark,fabSublinhe,fabMarkColor1,fabMarkColor2,fabMarkColor3};
+        allFloatingActionButtons = new FloatingActionButton[]{fab,fab2, fabFavorito,fab4,fabMark,fabSublinhe,fabMarkColor1,fabMarkColor2,fabMarkColor3};
         //Da um Hide em todos os elementos
         hideAllFab(allFloatingActionButtons);
 
@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             persistenceDao.openDB();
             persistenceDao.copiaBanco(PersistenceDao.DATABASE_NAME);
         }
+
         List<Livro> livroList = persistenceDao.getLivros(persistenceDao.openDB());
         livroArrayList.addAll(livroList);
         mainBo.populaLivroList(livroArrayList);
@@ -120,10 +121,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         expandableList.setAdapter(MyExpandAdapter);
 
         //Instancio a Primeira pagina
-        this.idLivro = persistenceDao.getEstadoLivroPreferences();
-        this.idCapitulo = persistenceDao.getEstadoCapituloPreferences();
+        this.idLivro = 1;//persistenceDao.getEstadoLivroPreferences();
+        this.idCapitulo =1; //persistenceDao.getEstadoCapituloPreferences();
 
-        itemsData = mainBo.recuperaVersiculosSelecionados(persistenceDao,idLivro,idCapitulo,livroArrayList);
+        itemsData = mainBo.recuperaVersiculosSelecionados(persistenceDao, idLivro, idCapitulo, livroArrayList);
         setTitle(mainBo.getTitle());
         createView(recyclerView, itemsData);
 
@@ -156,13 +157,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setOnScrollListener(new MyRecyclerScroll() {
             @Override
             public void show() {
-                fab.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                showAllAnimateFab(fabVoltarCap, fabAvancaCap);
             }
 
             @Override
             public void hide() {
-                fab.animate().translationY(fab.getHeight() + 200).setInterpolator(new AccelerateInterpolator(2)).start();
-                hideAllFab(allFloatingActionButtons);
+                hideAllAnimateFab(fabVoltarCap, fabAvancaCap);
+                //fab.animate().translationY(fab.getHeight() + 200).setInterpolator(new AccelerateInterpolator(2)).start();
+                //hideAllFab(allFloatingActionButtons);
+
             }
         });
 
@@ -171,18 +174,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View view) {
                 if (View.GONE == fab2.getVisibility()) {
                     fab.startAnimation(animeFloating);
-                    showAllFab(fab2, fab3, fab4);
+                    showAllFab(fab2, fabFavorito, fab4);
                     fab2.animate().translationY(0).setInterpolator(new DecelerateInterpolator(5)).setStartDelay(50);
-                    fab3.animate().translationY(0).setInterpolator(new DecelerateInterpolator(5)).setStartDelay(100);
+                    fabFavorito.animate().translationY(0).setInterpolator(new DecelerateInterpolator(5)).setStartDelay(100);
                     fab4.animate().translationY(0).setInterpolator(new DecelerateInterpolator(5)).setStartDelay(150);
 
                 } else {
                     fab.startAnimation(animeFloating2);
-
                     fab2.animate().translationY(fab.getHeight() + 100).setInterpolator(new AccelerateInterpolator(3)).start();
-                    fab3.animate().translationY(fab2.getHeight() + 100).setInterpolator(new AccelerateInterpolator(3)).start();
-                    fab4.animate().translationY(fab3.getHeight() + 100).setInterpolator(new AccelerateInterpolator(3)).start();
-                    hideAllFab(fab2, fab3, fab4, fabMark, fabSublinhe, fabMarkColor1, fabMarkColor2, fabMarkColor3);
+                    fabFavorito.animate().translationY(fab2.getHeight() + 100).setInterpolator(new AccelerateInterpolator(3)).start();
+                    fab4.animate().translationY(fabFavorito.getHeight() + 100).setInterpolator(new AccelerateInterpolator(3)).start();
+                    hideAllFab(fab2, fabFavorito, fab4, fabMark, fabSublinhe, fabMarkColor1, fabMarkColor2, fabMarkColor3);
 
                 }
             }
@@ -192,11 +194,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View view) {
                 if (View.GONE == fabMark.getVisibility()) {
                     showAllFab(fabMark, fabSublinhe, fabMarkColor1, fabMarkColor2, fabMarkColor3);
-                    hideAllFab(fab3, fab4);
+                    hideAllFab(fabFavorito, fab4);
                 } else {
-                    showAllFab(fab3, fab4);
+                    showAllFab(fabFavorito, fab4);
                     hideAllFab(fabMark, fabSublinhe, fabMarkColor1, fabMarkColor2, fabMarkColor3);
                 }
+            }
+        });
+        //Marca Como Favorito
+        fabFavorito.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                marcaComoFavorito();
+                moveScroll();
+                setTitle(mainBo.getTitle());
+                showAllFab(fabVoltarCap, fabAvancaCap);
+                hideAllFab(allFloatingActionButtons);
             }
         });
 
@@ -205,6 +218,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View v) {
                 realizaMarcacao(R.color.colorAccent);
                 moveScroll();
+                setTitle(mainBo.getTitle());
+                showAllFab(fabVoltarCap, fabAvancaCap);
+                hideAllFab(allFloatingActionButtons);
             }
         });
         fabMarkColor2.setOnClickListener(new View.OnClickListener() {
@@ -213,6 +229,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if(adapter.getSelectedItems().size()!=0) {
                     realizaMarcacao(R.color.verde_florecente);
                     moveScroll();
+                    setTitle(mainBo.getTitle());
+                    showAllFab(fabVoltarCap, fabAvancaCap);
+                    hideAllFab(allFloatingActionButtons);
                 }
             }
         });
@@ -222,6 +241,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if(adapter.getSelectedItems().size() != 0) {
                     realizaMarcacao(R.color.roxo_florecente);
                     moveScroll();
+                    setTitle(mainBo.getTitle());
+                    showAllFab(fabVoltarCap, fabAvancaCap);
+                    hideAllFab(allFloatingActionButtons);
 
                 }
             }
@@ -232,6 +254,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (adapter.getSelectedItems().size() != 0) {
                     deletaMarcaoes();
                     moveScroll();
+                    setTitle(mainBo.getTitle());
+                    showAllFab(fabVoltarCap, fabAvancaCap);
+                    hideAllFab(allFloatingActionButtons);
                 }
             }
         });
@@ -241,9 +266,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (adapter.getSelectedItems().size() != 0) {
                     realizaMarcacaoSublinhado();
                     moveScroll();
+                    setTitle(mainBo.getTitle());
+                    showAllFab(fabVoltarCap, fabAvancaCap);
+                    hideAllFab(allFloatingActionButtons);
                 }
             }
         });
+
+        fabAvancaCap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if((idCapitulo+1)>livroArrayList.get(idLivro-1).getCapituloList().size()){
+                    return;
+                }
+                mudaCapitulo(idCapitulo+=1);
+            }
+        });
+
+        fabVoltarCap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if((idCapitulo-1)<=0){
+                    return;
+                }
+                mudaCapitulo(idCapitulo-=1);
+            }
+        });
+
+
     }
 
     private void moveScroll(){
@@ -259,23 +309,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setTitle(mainBo.getTitle());
         createView(recyclerView, itemsData);
     }
-    public void realizaMarcacaoSublinhado(){
-        Marcacoes marcacoes;
-        List<Marcacoes> marcacoesList = new ArrayList<>();
-        for (Integer versiculo : adapter.getSelectedItems()) {
-            marcacoes = new Marcacoes();
-            marcacoes.setIdNumCap(idCapitulo);
-            marcacoes.setIdLivro(idLivro);
-            marcacoes.setIdVersiculo((versiculo + 1));
-            marcacoes.setSublinhado(true);
-            marcacoesList.add(marcacoes);
-        }
-        persistenceDao.salvarOrUpdateMarcarcoes(idLivro, idCapitulo, marcacoesList);
 
+    public void realizaMarcacaoSublinhado(){
+        persistenceDao.salvarOrUpdateMarcarcoes(idLivro, idCapitulo, mainBo.marcacoesEdit(adapter, idLivro, idCapitulo, null, null, true));
         itemsData = mainBo.recuperaVersiculosSelecionados(persistenceDao,idLivro,idCapitulo,livroArrayList);
         setTitle(mainBo.getTitle());
         createView(recyclerView, itemsData);
     }
+
+    public void mudaCapitulo(int idCapitulo){
+
+        persistenceDao.salvarEstadoPreferences(idLivro,idCapitulo);
+        itemsData = mainBo.recuperaVersiculosSelecionados(persistenceDao,idLivro,idCapitulo,livroArrayList);
+        setTitle(mainBo.getTitle());
+        createView(recyclerView, itemsData);
+    }
+
+
+
+    public void marcaComoFavorito(){
+        if(adapter.getSelectedItems().size()==0) {
+            Toast.makeText(this, R.string.selecione_versiculo, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(adapter.getSelectedItems().size()>1) {
+            Toast.makeText(this, R.string.selecione_apenas_um_versiculo, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Toast.makeText(this,R.string.favorito_salvo, Toast.LENGTH_SHORT).show();
+        persistenceDao.salvarOrUpdateMarcarcoes(idLivro, idCapitulo, mainBo.marcacoesEdit(adapter,idLivro,idCapitulo,null,true,null));
+        itemsData = mainBo.recuperaVersiculosSelecionados(persistenceDao,idLivro,idCapitulo,livroArrayList);
+        setTitle(mainBo.getTitle());
+        createView(recyclerView, itemsData);
+    }
+
     public void deletaMarcaoes(){
        Integer[] vers = new Integer[adapter.getSelectedItems().size()];
         for (int i=0;i<adapter.getSelectedItems().size();i++) {
@@ -294,6 +361,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setTitle(title);
         if(adapter.getSelectedItemCount()==0){
             setTitle(mainBo.getTitle());
+            showAllFab(fabVoltarCap, fabAvancaCap);
+            hideAllFab(allFloatingActionButtons);
+        }else{
+            showAllFab(fab);
+            showAllAnimateFab(fab);
+            hideAllFab(fabAvancaCap,fabVoltarCap);
         }
 
     }
@@ -315,9 +388,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if(adapter.getSelectedItemCount()!=0){
+            if (adapter.getSelectedItemCount()!=0){
                 adapter.clearSelections();
                 setTitle(mainBo.getTitle());
+                showAllFab(fabVoltarCap, fabAvancaCap);
+                hideAllFab(allFloatingActionButtons);
                 return;
             }
             super.onBackPressed();
@@ -362,13 +437,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 myToggleSelection(idx);
                 return;
             }
-
         }
-
     }
 
     //Métodos de Apoio
-
     /**
      *  Chama o Hide de todos dos FloatingActionButton Passados
      */
@@ -383,6 +455,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fabsArray[i].show();
         }
     }
+    private void showAllAnimateFab(FloatingActionButton... fabsArray){
+        for (int i=0;i<fabsArray.length;i++){
+            fabsArray[i].animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+        }
+    }
+    private void hideAllAnimateFab(FloatingActionButton... fabsArray){
+        for (int i=0;i<fabsArray.length;i++){
+            fabsArray[i].animate().translationY(fab.getHeight() + 200).setInterpolator(new AccelerateInterpolator(2)).start();
+        }
+    }
     private class RecyclerViewOnGestureListener extends SimpleOnGestureListener{
 
         @Override
@@ -395,7 +477,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         public void onLongPress(MotionEvent e) {
             View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
-            fab.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
             int idx = recyclerView.getChildAdapterPosition(view);
             myToggleSelection(idx);
             super.onLongPress(e);
@@ -410,6 +491,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+    }
+
+    public PersistenceDao getPersistenceDao() {
+        return persistenceDao;
     }
 
     // Métodos do Import

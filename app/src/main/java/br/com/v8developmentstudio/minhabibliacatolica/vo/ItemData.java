@@ -6,14 +6,14 @@ package br.com.v8developmentstudio.minhabibliacatolica.vo;
 public class ItemData {
     private CharSequence texto;
     private Boolean sublinhado;
-    private String marcacao_color;
+    private Integer marcacao_color;
     private Boolean favorito;
 
     public ItemData() {
 
     }
 
-    public ItemData(String texto, Boolean sublinhado,String marcacao_color,Boolean favorito) {
+    public ItemData(String texto, Boolean sublinhado,Integer marcacao_color,Boolean favorito) {
         this.texto = texto;
         this.sublinhado = sublinhado;
         this.marcacao_color = marcacao_color;
@@ -37,11 +37,11 @@ public class ItemData {
         this.sublinhado = sublinhado;
     }
 
-    public String getMarcacao_color() {
+    public Integer getMarcacao_color() {
         return marcacao_color;
     }
 
-    public void setMarcacao_color(String marcacao_color) {
+    public void setMarcacao_color(Integer marcacao_color) {
         this.marcacao_color = marcacao_color;
     }
 
