@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 public abstract class MyRecyclerScroll extends RecyclerView.OnScrollListener {
     private static final float HIDE_THRESHOLD = 100;
     private static final float SHOW_THRESHOLD = 50;
+
+
     private static int displayedposition = 0;
     int scrollDist = 0;
     private boolean isVisible = true;
@@ -46,6 +48,10 @@ public abstract class MyRecyclerScroll extends RecyclerView.OnScrollListener {
 
     public static int getDisplayedposition() {
         return displayedposition;
+    }
+
+    public static void setDisplayedposition(int displayedposition) {
+        MyRecyclerScroll.displayedposition = displayedposition;
     }
 
     public abstract void show();

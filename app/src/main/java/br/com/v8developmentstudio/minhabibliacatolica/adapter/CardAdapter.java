@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,10 +44,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>{
     class ViewHolder extends RecyclerView.ViewHolder{
         public TextView titulo;
         public TextView texto;
+
         public ViewHolder(View itemView) {
             super(itemView);
             titulo = (TextView)itemView.findViewById(R.id.id_cv_title_fav);
             texto = (TextView)itemView.findViewById(R.id.id_cv_texto_fav);
         }
+
+
     }
 }

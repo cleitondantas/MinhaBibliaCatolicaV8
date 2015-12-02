@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -211,27 +212,52 @@ public class PersistenceDao extends SQLiteOpenHelper{
         bancoDados.close();
     }
 
-    public List<ItemFavorito> recuperaListaFavoritos(SQLiteDatabase bancoDados){
-        List<Marcacoes> marcacoesArrayList = new ArrayList<>();
+    public List<ItemFavorito> recuperaListaFavoritos(SQLiteDatabase bancoDados) {
 
-        String query =  COLUMN_FAVORITO+" = ?";
-        String[] args = {""+true};
-        String[] columns = new String[]{COLUMN_ID,COLUMN_IDLIVRO,COLUMN_IDNUMCAP,COLUMN_VERSICULO,COLUMN_SUBLINHADO,COLUMN_MARCACAO_COLOR,COLUMN_FAVORITO};
-        cursor = bancoDados.query(TABLE_MARCACOES,columns,query,args,null,null,null);
-        Marcacoes marcacoes =null;
-        while(cursor.moveToNext()){
-            marcacoes = new Marcacoes();
-            marcacoes.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
-            marcacoes.setIdLivro(cursor.getInt(cursor.getColumnIndex(COLUMN_IDLIVRO)));
-            marcacoes.setIdNumCap(cursor.getInt(cursor.getColumnIndex(COLUMN_IDNUMCAP)));
-            marcacoes.setIdVersiculo(cursor.getInt(cursor.getColumnIndex(COLUMN_VERSICULO)));
-            marcacoes.setSublinhado(cursor.getInt(cursor.getColumnIndex(COLUMN_SUBLINHADO)) > 0);
-            marcacoes.setMarcacao_color(cursor.getInt(cursor.getColumnIndex(COLUMN_MARCACAO_COLOR)));
-            marcacoes.setFavorito(cursor.getInt(cursor.getColumnIndex(COLUMN_FAVORITO)) > 0);
-            marcacoesArrayList.add(marcacoes);
+        List<ItemFavorito> itemFavoritos = new ArrayList<>();
+        String query = COLUMN_FAVORITO + " = ?";
+        String[] args = {"" + 1};
+        String[] columns = new String[]{COLUMN_ID, COLUMN_IDLIVRO, COLUMN_IDNUMCAP, COLUMN_VERSICULO, COLUMN_SUBLINHADO, COLUMN_MARCACAO_COLOR, COLUMN_FAVORITO};
+        cursor = bancoDados.query(TABLE_MARCACOES, columns, query, args, null, null, null);
+        ItemFavorito item = null;
+        while (cursor.moveToNext()) {
+            item = new ItemFavorito();
+            item.setIdLivro(cursor.getInt(cursor.getColumnIndex(COLUMN_IDLIVRO)));
+            item.setIdCapitulo(cursor.getInt(cursor.getColumnIndex(COLUMN_IDNUMCAP)));
+            item.setIdVersiculo(cursor.getInt(cursor.getColumnIndex(COLUMN_VERSICULO)));
+            itemFavoritos.add(item);
+        }
+
+        for (ItemFavorito items : itemFavoritos) {
+            String query2 = COLUMN_IDLIVRO + " = ? AND " + COLUMN_IDNUMCAP + " = ?";
+            String[] args2 = {"" + items.getIdLivro(), "" + items.getIdCapitulo()};
+            cursor = bancoDados.query(TABLE_RELAC_LIVRO_CAP, new String[]{COLUMN_ID, COLUMN_IDLIVRO, COLUMN_IDNUMCAP, COLUMN_NOME_TABELA}, query2, args2, null, null, null);
+            while (cursor.moveToNext()) {
+                items.setTitulo(cursor.getString(cursor.getColumnIndex(COLUMN_NOME_TABELA)));
+                break;
+            }
+        }
+
+        for (ItemFavorito items : itemFavoritos) {
+            String query2 = COLUMN_ID + " = ?";
+            String[] args2 = {"" + items.getIdVersiculo()};
+            cursor = bancoDados.query(items.getTitulo(), new String[]{COLUMN_ID, COLUMN_VERSICULO}, query2, args2, null, null, null);
+            while (cursor.moveToNext()) {
+                items.setTexto(cursor.getString(cursor.getColumnIndex(COLUMN_VERSICULO)));
+            }
+        }
+
+        for (ItemFavorito items : itemFavoritos) {
+            String query2 = COLUMN_ID + " = ?";
+            String[] args2 = {"" + items.getIdLivro()};
+            cursor = bancoDados.query(TABLE_LIVROS, new String[]{COLUMN_ID, COLUMN_TITULO_LIVRO, COLUMN_QTDCAPITULOS, COLUMN_ABREVIACAO}, query2, args2, null, null, null);
+            while (cursor.moveToNext()) {
+                items.setTitulo(cursor.getString(cursor.getColumnIndex(COLUMN_ABREVIACAO)) + " Cap: " + items.getIdCapitulo() + " Ver: " + items.getIdVersiculo());
+            }
         }
         bancoDados.close();
-        return null;
+        Collections.reverse(itemFavoritos);
+        return itemFavoritos;
     }
 
 

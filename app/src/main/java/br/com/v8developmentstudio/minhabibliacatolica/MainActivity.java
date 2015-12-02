@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<Livro> livroArrayList = new ArrayList<>();
     private RecyclerView recyclerView;
     private ExpandableListView expandableList;
-    private MyExpandableAdapter MyExpandAdapter;
+    private MyExpandableAdapter myExpandAdapter;
     private DrawerLayout drawer;
     private ActionMode actionMode;
     private GestureDetectorCompat gestureDetector;
@@ -115,19 +115,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         livroArrayList.addAll(livroList);
         mainBo.populaLivroList(livroArrayList);
 
-        MyExpandAdapter = new MyExpandableAdapter(livroArrayList, this);
-        MyExpandAdapter.setInflater((android.view.LayoutInflater) this.getSystemService(android.content.Context.LAYOUT_INFLATER_SERVICE), this);
+        myExpandAdapter = new MyExpandableAdapter(livroArrayList, this);
+        myExpandAdapter.setInflater((android.view.LayoutInflater) this.getSystemService(android.content.Context.LAYOUT_INFLATER_SERVICE), this);
         expandableList.setDividerHeight(3);
         expandableList.setChildDivider(getResources().getDrawable(R.color.background_material_dark));
-        expandableList.setAdapter(MyExpandAdapter);
+        expandableList.setAdapter(myExpandAdapter);
 
-        //Instancio a Primeira pagina
-        this.idLivro = 1;//persistenceDao.getEstadoLivroPreferences();
-        this.idCapitulo =1; //persistenceDao.getEstadoCapituloPreferences();
+        //Verifica se a chamada da tela está sendo nova ou se está vindo de Favoritos
+        Intent intent = getIntent();
+        int idExtraLivro = intent.getIntExtra("idLivro", 1000);
+        int idExtraCapitulo = intent.getIntExtra("idCapitulo",1000);
+        int idExtraVersiculo = intent.getIntExtra("idVersiculo",1000);
+
+        if(idExtraCapitulo!=1000 && idExtraLivro!=1000){
+            this.idCapitulo = idExtraCapitulo;
+            this.idLivro = idExtraLivro;
+        }else{
+            //Instancio a Primeira pagina
+            this.idLivro = persistenceDao.getEstadoLivroPreferences();
+            this.idCapitulo = persistenceDao.getEstadoCapituloPreferences();
+        }
 
         itemsData = mainBo.recuperaVersiculosSelecionados(persistenceDao, idLivro, idCapitulo, livroArrayList);
         setTitle(mainBo.getTitle());
         createView(recyclerView, itemsData);
+
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
