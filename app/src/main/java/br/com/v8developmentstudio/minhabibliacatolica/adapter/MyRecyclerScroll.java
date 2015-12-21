@@ -21,7 +21,6 @@ public abstract class MyRecyclerScroll extends RecyclerView.OnScrollListener {
         super.onScrolled(recyclerView, dx, dy);
         LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
 
-
         displayedposition = llm.findFirstVisibleItemPosition();
         //  Check scrolled distance against the minimum
         if (isVisible && scrollDist > HIDE_THRESHOLD) {

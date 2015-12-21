@@ -1,5 +1,6 @@
 package br.com.v8developmentstudio.minhabibliacatolica.adapter;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemFavorito;
  */
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>{
     List<ItemFavorito> itemsfavoritos;
+
     public CardAdapter(List<ItemFavorito> itemsfavoritos){
         super();
         this.itemsfavoritos = itemsfavoritos;
@@ -26,6 +28,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>{
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_view_card_item, viewGroup, false);
+
         ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
     }

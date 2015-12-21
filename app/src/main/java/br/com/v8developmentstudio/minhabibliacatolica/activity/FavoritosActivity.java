@@ -1,14 +1,23 @@
 package br.com.v8developmentstudio.minhabibliacatolica.activity;
 
+import android.animation.Animator;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import java.util.List;
 
@@ -31,7 +40,10 @@ public class FavoritosActivity extends AppCompatActivity implements RecyclerView
         setContentView(R.layout.activity_favoritos);
         persistenceDao = new PersistenceDao(this);
         mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view_favoritos);
+        CardView card = (CardView) findViewById(R.id.card_view);
+
         mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView .addOnItemTouchListener(this);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -59,11 +71,12 @@ public class FavoritosActivity extends AppCompatActivity implements RecyclerView
         intent.putExtra("idCapitulo",item.getIdCapitulo());
         intent.putExtra("idVersiculo", item.getIdVersiculo());
         startActivity(intent);
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 
     @Override
     public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-        gestureDetector.onTouchEvent(e);
+       gestureDetector.onTouchEvent(e);
         return false;
     }
 
