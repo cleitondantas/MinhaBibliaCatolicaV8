@@ -46,7 +46,6 @@ public class MyExpandableAdapter extends CustomBaseExpandableListAdapter {
     @Override
     public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         childCapitulos = livroArrayList.get(groupPosition).getCapituloList();
-
         //Posição id do Livro e do Capitulo selecionado
         idLivro = livroArrayList.get(groupPosition).getId();
 

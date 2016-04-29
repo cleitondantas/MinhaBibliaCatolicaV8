@@ -1,9 +1,7 @@
 package br.com.v8developmentstudio.minhabibliacatolica.activity;
 
-import android.animation.Animator;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,19 +9,18 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewAnimationUtils;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.v8developmentstudio.minhabibliacatolica.MainActivity;
 import br.com.v8developmentstudio.minhabibliacatolica.R;
 import br.com.v8developmentstudio.minhabibliacatolica.adapter.CardAdapter;
+import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyAdapter;
 import br.com.v8developmentstudio.minhabibliacatolica.dao.PersistenceDao;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemFavorito;
 
@@ -34,13 +31,17 @@ public class FavoritosActivity extends AppCompatActivity implements RecyclerView
     private PersistenceDao persistenceDao;
     private GestureDetectorCompat gestureDetector;
     private List<ItemFavorito> itemsfavoritos;
+    private SparseBooleanArray selectedItems;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favoritos);
         persistenceDao = new PersistenceDao(this);
+        selectedItems = new SparseBooleanArray();
+
         mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view_favoritos);
-        CardView card = (CardView) findViewById(R.id.card_view);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -57,9 +58,10 @@ public class FavoritosActivity extends AppCompatActivity implements RecyclerView
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(FavoritosActivity.this, MainActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        clearSelections();
         super.onBackPressed();
     }
 
@@ -98,8 +100,38 @@ public class FavoritosActivity extends AppCompatActivity implements RecyclerView
         public void onLongPress(MotionEvent e) {
             View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
             int idx = mRecyclerView.getChildAdapterPosition(view);
+            toggleSelection(idx);
+            onSelectRecyclerView(view);
             super.onLongPress(e);
         }
     }
 
+    public void onSelectRecyclerView(View view){
+        
+
+    }
+
+    public void toggleSelection(int pos) {
+        if (selectedItems.get(pos, false)) {
+            selectedItems.delete(pos);
+        } else {
+            selectedItems.put(pos, true);
+        }
+    }
+
+    public void clearSelections() {
+        selectedItems.clear();
+    }
+
+    public int getSelectedItemCount() {
+        return selectedItems.size();
+    }
+
+    public List<Integer> getSelectedItems() {
+        List<Integer> items = new ArrayList<Integer>(selectedItems.size());
+        for (int i = 0; i < selectedItems.size(); i++) {
+            items.add(selectedItems.keyAt(i));
+        }
+        return items;
+    }
 }

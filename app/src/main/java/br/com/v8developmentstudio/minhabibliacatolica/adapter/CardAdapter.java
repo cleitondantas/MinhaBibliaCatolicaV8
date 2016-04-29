@@ -37,6 +37,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>{
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         viewHolder.titulo.setText(itemsfavoritos.get(i).getTitulo());
         viewHolder.texto.setText(itemsfavoritos.get(i).getTexto());
+
+
+
     }
 
     @Override

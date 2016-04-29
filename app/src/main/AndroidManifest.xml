@@ -15,7 +15,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -27,6 +26,10 @@
             android:name=".activity.FavoritosActivity"
             android:label="@string/title_favoritos"
             android:noHistory="true">
+        </activity>
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:label="@string/action_settings">
         </activity>
     </application>
 

@@ -11,6 +11,7 @@ public class Marcacoes {
     private Boolean sublinhado;
     private Integer marcacao_color;
     private Boolean favorito;
+    private Boolean compartihar;
 
 
     public int getId() {
@@ -69,6 +70,13 @@ public class Marcacoes {
         this.favorito = favorito;
     }
 
+    public Boolean getCompartihar() {
+        return compartihar;
+    }
+
+    public void setCompartihar(Boolean compartihar) {
+        this.compartihar = compartihar;
+    }
 
     @Override
     public boolean equals(Object o) {

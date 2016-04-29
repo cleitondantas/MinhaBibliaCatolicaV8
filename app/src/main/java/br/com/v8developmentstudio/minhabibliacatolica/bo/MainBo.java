@@ -78,7 +78,7 @@ public class MainBo {
      * @return
      */
 
-    public List<Marcacoes> marcacoesEdit(MyAdapter adapter,int idLivro,int idCapitulo,Integer r_Color,Boolean favorito,Boolean sublinhado ){
+    public List<Marcacoes> marcacoesEdit(MyAdapter adapter,int idLivro,int idCapitulo,Integer r_Color,Boolean favorito,Boolean sublinhado,Boolean share ){
         Marcacoes marcacoes;
         List<Marcacoes> marcacoesList = new ArrayList<>();
         for (Integer versiculo : adapter.getSelectedItems()) {
@@ -86,7 +86,7 @@ public class MainBo {
             marcacoes.setIdNumCap(idCapitulo);
             marcacoes.setIdLivro(idLivro);
             marcacoes.setIdVersiculo((versiculo + 1));
-
+            marcacoes.setCompartihar(share);
             marcacoes.setFavorito(favorito);
             marcacoes.setSublinhado(sublinhado);
             if(r_Color==null) {
