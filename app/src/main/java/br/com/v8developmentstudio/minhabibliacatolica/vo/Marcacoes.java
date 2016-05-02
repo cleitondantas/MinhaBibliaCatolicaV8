@@ -12,6 +12,7 @@ public class Marcacoes {
     private Integer marcacao_color;
     private Boolean favorito;
     private Boolean compartihar;
+    private Integer idAnotacoes;
 
 
     public int getId() {
@@ -76,6 +77,14 @@ public class Marcacoes {
 
     public void setCompartihar(Boolean compartihar) {
         this.compartihar = compartihar;
+    }
+
+    public Integer getIdAnotacoes() {
+        return idAnotacoes;
+    }
+
+    public void setIdAnotacoes(Integer idAnotacoes) {
+        this.idAnotacoes = idAnotacoes;
     }
 
     @Override

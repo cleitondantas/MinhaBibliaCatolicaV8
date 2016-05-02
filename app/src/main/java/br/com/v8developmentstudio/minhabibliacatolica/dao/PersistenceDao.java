@@ -4,11 +4,9 @@ package br.com.v8developmentstudio.minhabibliacatolica.dao;
  * Created by cleiton.dantas on 23/10/2015.
  */
 
-import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,6 +19,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 
+import br.com.v8developmentstudio.minhabibliacatolica.vo.Anotacoes;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemFavorito;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Livro;
 import br.com.v8developmentstudio.minhabibliacatolica.vo.Marcacoes;
@@ -45,6 +44,16 @@ public class PersistenceDao extends SQLiteOpenHelper{
     private static final String COLUMN_SUBLINHADO ="SUBLINHADO";
     private static final String COLUMN_MARCACAO_COLOR ="MARCACAO_COLOR";
     private static final String COLUMN_FAVORITO ="FAVORITO";
+    private static final String COLUMN_IDANOTACOES = "IDANOTACOES";
+
+    private static final String TABLE_ANOTACOES = "TB_ANOTACOES";
+    private static final String COLUMN_VERSICULOS = "VERSICULOS";
+    private static final String COLUMN_COMENTARIOS = "COMENTARIOS";
+
+
+
+
+
 
     private Cursor cursor;
     private static PersistenceDao instance;
@@ -81,6 +90,52 @@ public class PersistenceDao extends SQLiteOpenHelper{
         bancoDados.close();
         return relacLivroCap;
     }
+
+    /**
+     *
+     */
+    public List<Anotacoes>  getAnotacoes(SQLiteDatabase bancoDados,int id){
+        String query =  COLUMN_ID+" = ? ";
+        String[] args = {""+id};
+        cursor = bancoDados.query(TABLE_ANOTACOES, new String[]{COLUMN_ID,COLUMN_VERSICULOS,COLUMN_COMENTARIOS},query,args,null,null,null);
+        Anotacoes anotacoes =null;
+        List<Anotacoes> anotacoesList = new ArrayList<Anotacoes>();
+        while(cursor.moveToNext()){
+            anotacoes = new Anotacoes();
+            anotacoes.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
+            anotacoes.setComentarios(cursor.getString(cursor.getColumnIndex(COLUMN_COMENTARIOS)));
+            anotacoes.setVersiculos(cursor.getString(cursor.getColumnIndex(COLUMN_VERSICULOS)));
+            anotacoesList.add(anotacoes);
+        }
+        bancoDados.close();
+        return anotacoesList;
+    }
+
+    /**
+     *
+     */
+    public List<Anotacoes>  getTodasAnotacoes(SQLiteDatabase bancoDados){
+        cursor = bancoDados.query(TABLE_ANOTACOES, new String[]{COLUMN_ID,COLUMN_VERSICULOS,COLUMN_COMENTARIOS},null,null,null,null,null);
+        Anotacoes anotacoes =null;
+        List<Anotacoes> anotacoesList = new ArrayList<Anotacoes>();
+        while(cursor.moveToNext()){
+            anotacoes = new Anotacoes();
+            anotacoes.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
+            anotacoes.setComentarios(cursor.getString(cursor.getColumnIndex(COLUMN_COMENTARIOS)));
+            anotacoes.setVersiculos(cursor.getString(cursor.getColumnIndex(COLUMN_VERSICULOS)));
+            anotacoesList.add(anotacoes);
+        }
+        bancoDados.close();
+        return anotacoesList;
+    }
+
+    public void salvarAnotacoes(SQLiteDatabase bancoDados, Anotacoes anotacoes){
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_VERSICULOS,anotacoes.getVersiculos());
+        values.put(COLUMN_COMENTARIOS,anotacoes.getComentarios());
+        bancoDados.insert(TABLE_ANOTACOES, null, values);
+    }
+
 
 
     /**
@@ -132,7 +187,7 @@ public class PersistenceDao extends SQLiteOpenHelper{
 
         String query =  COLUMN_IDLIVRO+" = ? AND "+COLUMN_IDNUMCAP +" = ?";
         String[] args = {""+idLivro,""+idNumCap};
-        String[] columns = new String[]{COLUMN_ID,COLUMN_IDLIVRO,COLUMN_IDNUMCAP,COLUMN_VERSICULO,COLUMN_SUBLINHADO,COLUMN_MARCACAO_COLOR,COLUMN_FAVORITO};
+        String[] columns = new String[]{COLUMN_ID,COLUMN_IDLIVRO,COLUMN_IDNUMCAP,COLUMN_VERSICULO,COLUMN_SUBLINHADO,COLUMN_MARCACAO_COLOR,COLUMN_FAVORITO, COLUMN_IDANOTACOES};
         cursor = bancoDados.query(TABLE_MARCACOES,columns,query,args,null,null,null);
         Marcacoes marcacoes =null;
         while(cursor.moveToNext()){
@@ -144,6 +199,7 @@ public class PersistenceDao extends SQLiteOpenHelper{
             marcacoes.setSublinhado(cursor.getInt(cursor.getColumnIndex(COLUMN_SUBLINHADO)) > 0);
             marcacoes.setMarcacao_color(cursor.getInt(cursor.getColumnIndex(COLUMN_MARCACAO_COLOR)));
             marcacoes.setFavorito(cursor.getInt(cursor.getColumnIndex(COLUMN_FAVORITO)) > 0);
+            marcacoes.setIdAnotacoes(cursor.getInt(cursor.getColumnIndex(COLUMN_IDANOTACOES)));
             marcacoesArrayList.add(marcacoes);
         }
         bancoDados.close();
@@ -192,6 +248,10 @@ public class PersistenceDao extends SQLiteOpenHelper{
                         if(marc.getFavorito()!=null){
                             values.put(COLUMN_FAVORITO,marc.getFavorito());
                         }
+                        if(marc.getIdAnotacoes()!=null){
+                            values.put(COLUMN_IDANOTACOES,marc.getIdAnotacoes());
+                        }
+
                         bancoDados.update(TABLE_MARCACOES, values,COLUMN_ID +"= ?",new String[]{""+list.getId()});
                     }
                 }
@@ -207,6 +267,7 @@ public class PersistenceDao extends SQLiteOpenHelper{
             values.put(COLUMN_SUBLINHADO,marc.getSublinhado());
             values.put(COLUMN_MARCACAO_COLOR,marc.getMarcacao_color());
             values.put(COLUMN_FAVORITO, marc.getFavorito());
+            values.put(COLUMN_IDANOTACOES, marc.getIdAnotacoes());
             bancoDados.insert(TABLE_MARCACOES, null, values);
         }
         bancoDados.close();

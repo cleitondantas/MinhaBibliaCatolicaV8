@@ -12,6 +12,11 @@ public class Livro {
     private int qtdCapitulos;
     private List<Capitulo> capituloList;
 
+    public Livro() {
+    }
+    public Livro(int id) {
+        this.id = id;
+    }
 
     public int getQtdCapitulos() {
         return qtdCapitulos;
@@ -50,6 +55,21 @@ public class Livro {
         this.abreviacao = abreviacao;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Livro livro = (Livro) o;
+
+        return getId() == livro.getId();
+
+    }
+
+    @Override
+    public int hashCode() {
+        return getId();
+    }
 
     @Override
     public String toString() {
