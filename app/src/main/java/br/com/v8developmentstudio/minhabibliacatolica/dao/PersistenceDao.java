@@ -187,7 +187,7 @@ public class PersistenceDao extends SQLiteOpenHelper{
 
         String query =  COLUMN_IDLIVRO+" = ? AND "+COLUMN_IDNUMCAP +" = ?";
         String[] args = {""+idLivro,""+idNumCap};
-        String[] columns = new String[]{COLUMN_ID,COLUMN_IDLIVRO,COLUMN_IDNUMCAP,COLUMN_VERSICULO,COLUMN_SUBLINHADO,COLUMN_MARCACAO_COLOR,COLUMN_FAVORITO, COLUMN_IDANOTACOES};
+        String[] columns = new String[]{COLUMN_ID,COLUMN_IDLIVRO,COLUMN_IDNUMCAP,COLUMN_VERSICULO,COLUMN_SUBLINHADO,COLUMN_MARCACAO_COLOR,COLUMN_FAVORITO,COLUMN_IDANOTACOES};
         cursor = bancoDados.query(TABLE_MARCACOES,columns,query,args,null,null,null);
         Marcacoes marcacoes =null;
         while(cursor.moveToNext()){
@@ -199,7 +199,7 @@ public class PersistenceDao extends SQLiteOpenHelper{
             marcacoes.setSublinhado(cursor.getInt(cursor.getColumnIndex(COLUMN_SUBLINHADO)) > 0);
             marcacoes.setMarcacao_color(cursor.getInt(cursor.getColumnIndex(COLUMN_MARCACAO_COLOR)));
             marcacoes.setFavorito(cursor.getInt(cursor.getColumnIndex(COLUMN_FAVORITO)) > 0);
-            marcacoes.setIdAnotacoes(cursor.getInt(cursor.getColumnIndex(COLUMN_IDANOTACOES)));
+            marcacoes.setIdAnotacoes(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_IDANOTACOES))));
             marcacoesArrayList.add(marcacoes);
         }
         bancoDados.close();
