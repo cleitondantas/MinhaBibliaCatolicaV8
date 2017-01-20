@@ -1,4 +1,4 @@
-package br.com.v8developmentstudio.minhabibliacatolica.adapter;
+package br.com.cybertronyk.minhabibliacatolicav2.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;

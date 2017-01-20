@@ -1,11 +1,9 @@
-package br.com.v8developmentstudio.minhabibliacatolica.activity;
+package br.com.cybertronyk.minhabibliacatolicav2.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,12 +15,11 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.v8developmentstudio.minhabibliacatolica.MainActivity;
+import br.com.cybertronyk.minhabibliacatolicav2.MainActivity;
 import br.com.v8developmentstudio.minhabibliacatolica.R;
-import br.com.v8developmentstudio.minhabibliacatolica.adapter.CardAdapter;
-import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyAdapter;
-import br.com.v8developmentstudio.minhabibliacatolica.dao.PersistenceDao;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemFavorito;
+import br.com.cybertronyk.minhabibliacatolicav2.adapter.CardAdapter;
+import br.com.cybertronyk.minhabibliacatolicav2.dao.PersistenceDao;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.ItemFavorito;
 
 public class FavoritosActivity extends AppCompatActivity implements RecyclerView.OnItemTouchListener, View.OnClickListener{
     private RecyclerView mRecyclerView;

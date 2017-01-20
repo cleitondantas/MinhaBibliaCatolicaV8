@@ -1,4 +1,4 @@
-package br.com.v8developmentstudio.minhabibliacatolica;
+package br.com.cybertronyk.minhabibliacatolicav2;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,17 +28,18 @@ import java.util.List;
 import  android.view.animation.Animation;
 import static android.view.GestureDetector.SimpleOnGestureListener;
 
-import br.com.v8developmentstudio.minhabibliacatolica.activity.FavoritosActivity;
-import br.com.v8developmentstudio.minhabibliacatolica.activity.SettingsActivity;
-import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyAdapter;
-import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyExpandableAdapter;
-import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyRecyclerScroll;
-import br.com.v8developmentstudio.minhabibliacatolica.bo.MainBo;
-import br.com.v8developmentstudio.minhabibliacatolica.dao.PersistenceDao;
-import br.com.v8developmentstudio.minhabibliacatolica.activity.AnotacoesActivity;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemData;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.Livro;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.Marcacoes;
+import br.com.v8developmentstudio.minhabibliacatolica.R;
+import br.com.cybertronyk.minhabibliacatolicav2.activity.FavoritosActivity;
+import br.com.cybertronyk.minhabibliacatolicav2.activity.SettingsActivity;
+import br.com.cybertronyk.minhabibliacatolicav2.adapter.MyAdapter;
+import br.com.cybertronyk.minhabibliacatolicav2.adapter.MyExpandableAdapter;
+import br.com.cybertronyk.minhabibliacatolicav2.adapter.MyRecyclerScroll;
+import br.com.cybertronyk.minhabibliacatolicav2.bo.MainBo;
+import br.com.cybertronyk.minhabibliacatolicav2.dao.PersistenceDao;
+import br.com.cybertronyk.minhabibliacatolicav2.activity.AnotacoesActivity;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.ItemData;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.Livro;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.Marcacoes;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener ,RecyclerView.OnItemTouchListener, View.OnClickListener {
@@ -418,7 +418,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void myToggleSelection(int idx) {
         adapter.toggleSelection(idx);
-        String title = getString(R.string.selected_count, adapter.getSelectedItemCount());
+        Integer  itemCont  =  adapter.getSelectedItemCount();
+        String title = getString(R.string.selected_count,(Object)itemCont);
         setTitle(title);
         if(adapter.getSelectedItemCount()==0){
             setTitle(mainBo.getTitle());

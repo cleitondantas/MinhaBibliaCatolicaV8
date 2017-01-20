@@ -1,11 +1,11 @@
-package br.com.v8developmentstudio.minhabibliacatolica.activity;
+package br.com.cybertronyk.minhabibliacatolicav2.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 
-import br.com.v8developmentstudio.minhabibliacatolica.MainActivity;
+import br.com.cybertronyk.minhabibliacatolicav2.MainActivity;
 import br.com.v8developmentstudio.minhabibliacatolica.R;
 
 public class AnotacoesActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package br.com.v8developmentstudio.minhabibliacatolica.dao;
+package br.com.cybertronyk.minhabibliacatolicav2.dao;
 
 /**
  * Created by cleiton.dantas on 23/10/2015.
@@ -19,12 +19,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 
-import br.com.v8developmentstudio.minhabibliacatolica.vo.Anotacoes;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemFavorito;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.Livro;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.Marcacoes;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.RelacLivroCap;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.Versiculo;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.Anotacoes;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.ItemFavorito;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.Livro;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.Marcacoes;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.RelacLivroCap;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.Versiculo;
 
 
 public class PersistenceDao extends SQLiteOpenHelper{
@@ -199,7 +199,10 @@ public class PersistenceDao extends SQLiteOpenHelper{
             marcacoes.setSublinhado(cursor.getInt(cursor.getColumnIndex(COLUMN_SUBLINHADO)) > 0);
             marcacoes.setMarcacao_color(cursor.getInt(cursor.getColumnIndex(COLUMN_MARCACAO_COLOR)));
             marcacoes.setFavorito(cursor.getInt(cursor.getColumnIndex(COLUMN_FAVORITO)) > 0);
-            marcacoes.setIdAnotacoes(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_IDANOTACOES))));
+            String anotacao  = cursor.getString(cursor.getColumnIndex(COLUMN_IDANOTACOES));
+            if(anotacao!=null) {
+                marcacoes.setIdAnotacoes(Integer.parseInt(anotacao));
+            }
             marcacoesArrayList.add(marcacoes);
         }
         bancoDados.close();
@@ -268,6 +271,10 @@ public class PersistenceDao extends SQLiteOpenHelper{
             values.put(COLUMN_MARCACAO_COLOR,marc.getMarcacao_color());
             values.put(COLUMN_FAVORITO, marc.getFavorito());
             values.put(COLUMN_IDANOTACOES, marc.getIdAnotacoes());
+            if(!bancoDados.isOpen()){
+                this.openDB();
+            }
+
             bancoDados.insert(TABLE_MARCACOES, null, values);
         }
         bancoDados.close();

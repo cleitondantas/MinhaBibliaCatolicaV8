@@ -1,16 +1,16 @@
-package br.com.v8developmentstudio.minhabibliacatolica.bo;
+package br.com.cybertronyk.minhabibliacatolicav2.bo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.v8developmentstudio.minhabibliacatolica.adapter.MyAdapter;
-import br.com.v8developmentstudio.minhabibliacatolica.dao.PersistenceDao;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.Capitulo;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemData;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.Livro;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.Marcacoes;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.RelacLivroCap;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.Versiculo;
+import br.com.cybertronyk.minhabibliacatolicav2.adapter.MyAdapter;
+import br.com.cybertronyk.minhabibliacatolicav2.dao.PersistenceDao;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.Capitulo;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.ItemData;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.Livro;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.Marcacoes;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.RelacLivroCap;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.Versiculo;
 
 /**
  * Created by cleiton.dantas on 27/11/2015.

@@ -1,4 +1,4 @@
-package br.com.v8developmentstudio.minhabibliacatolica.adapter;
+package br.com.cybertronyk.minhabibliacatolicav2.adapter;
 
 
 import android.app.Activity;
@@ -13,12 +13,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.v8developmentstudio.minhabibliacatolica.MainActivity;
+import br.com.cybertronyk.minhabibliacatolicav2.MainActivity;
 import br.com.v8developmentstudio.minhabibliacatolica.R;
-import br.com.v8developmentstudio.minhabibliacatolica.dao.PersistenceDao;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.Capitulo;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemData;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.Livro;
+import br.com.cybertronyk.minhabibliacatolicav2.dao.PersistenceDao;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.Capitulo;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.ItemData;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.Livro;
 
 public class MyExpandableAdapter extends CustomBaseExpandableListAdapter {
 

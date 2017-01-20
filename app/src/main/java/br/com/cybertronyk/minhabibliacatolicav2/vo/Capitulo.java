@@ -1,4 +1,4 @@
-package br.com.v8developmentstudio.minhabibliacatolica.vo;
+package br.com.cybertronyk.minhabibliacatolicav2.vo;
 
 import java.util.List;
 

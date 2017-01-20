@@ -1,4 +1,4 @@
-package br.com.v8developmentstudio.minhabibliacatolica.vo;
+package br.com.cybertronyk.minhabibliacatolicav2.vo;
 
 /**
  * Created by cleiton.dantas on 26/10/2015.

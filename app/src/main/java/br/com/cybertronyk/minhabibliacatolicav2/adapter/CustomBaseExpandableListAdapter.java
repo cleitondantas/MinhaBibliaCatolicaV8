@@ -1,4 +1,4 @@
-package br.com.v8developmentstudio.minhabibliacatolica.adapter;
+package br.com.cybertronyk.minhabibliacatolicav2.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;

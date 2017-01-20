@@ -1,18 +1,15 @@
-package br.com.v8developmentstudio.minhabibliacatolica.adapter;
+package br.com.cybertronyk.minhabibliacatolicav2.adapter;
 
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import br.com.v8developmentstudio.minhabibliacatolica.R;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemFavorito;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.ItemFavorito;
 
 /**
  * Created by cleiton.dantas on 01/12/2015.

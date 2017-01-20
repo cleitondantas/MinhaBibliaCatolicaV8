@@ -1,4 +1,4 @@
-package br.com.v8developmentstudio.minhabibliacatolica.adapter;
+package br.com.cybertronyk.minhabibliacatolicav2.adapter;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -15,7 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import br.com.v8developmentstudio.minhabibliacatolica.R;
-import br.com.v8developmentstudio.minhabibliacatolica.vo.ItemData;
+import br.com.cybertronyk.minhabibliacatolicav2.vo.ItemData;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private ItemData[] itemsData;
