@@ -13,7 +13,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.cybertronyk.minhabibliacatolicav2.MainActivity;
+import br.com.cybertronyk.minhabibliacatolicav2.activity.MainActivity;
 import br.com.v8developmentstudio.minhabibliacatolica.R;
 import br.com.cybertronyk.minhabibliacatolicav2.dao.PersistenceDao;
 import br.com.cybertronyk.minhabibliacatolicav2.vo.Capitulo;

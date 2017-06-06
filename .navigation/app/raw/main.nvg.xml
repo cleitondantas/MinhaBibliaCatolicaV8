@@ -6,7 +6,7 @@
     <statePointEntry>
       <state      
         class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
-        className = "br.com.cybertronyk.minhabibliacatolicav2.MainActivity"/>
+        className = "br.com.cybertronyk.minhabibliacatolicav2.activity.MainActivity"/>
       <point      
         x = "844"      
         y = "184"/>

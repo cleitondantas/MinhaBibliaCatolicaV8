@@ -1,20 +1,40 @@
 package br.com.cybertronyk.minhabibliacatolicav2.vo;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Property;
+
 /**
  * Created by cleiton.dantas on 02/05/2016.
  */
+@Entity
 public class Anotacoes {
 
-    private int id;
+    @Generated
+    public  Anotacoes(){
+    }
+
+    @Generated
+    public  Anotacoes(Long id){
+        this.id = id;
+    }
+
+    @Id(autoincrement = true)
+    private Long id;
+
+    @Property(nameInDb = "USERNAME")
     private String versiculos;
+
+
     private String comentarios;
 
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

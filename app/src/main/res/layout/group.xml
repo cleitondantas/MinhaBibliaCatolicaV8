@@ -6,7 +6,7 @@
     android:clickable="true"
     android:orientation="vertical"
     android:paddingLeft="3dp"
-    tools:context="br.com.cybertronyk.minhabibliacatolicav2.MainActivity">
+    tools:context="br.com.cybertronyk.minhabibliacatolicav2.activity.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

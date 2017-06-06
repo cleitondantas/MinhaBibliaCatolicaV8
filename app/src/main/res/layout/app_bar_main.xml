@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="br.com.cybertronyk.minhabibliacatolicav2.MainActivity">
+    tools:context="br.com.cybertronyk.minhabibliacatolicav2.activity.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -68,7 +68,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="200dp"
         android:layout_marginRight="16dp"
-        android:src="@drawable/abc_ic_menu_paste_mtrl_am_alpha"
+        android:src="@drawable/ic_edita"
         app:backgroundTint="@color/colorPrimary"
         app:borderWidth="0dp"
         app:elevation="6dp"

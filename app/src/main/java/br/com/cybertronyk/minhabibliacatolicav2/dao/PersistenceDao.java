@@ -102,7 +102,7 @@ public class PersistenceDao extends SQLiteOpenHelper{
         List<Anotacoes> anotacoesList = new ArrayList<Anotacoes>();
         while(cursor.moveToNext()){
             anotacoes = new Anotacoes();
-            anotacoes.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
+            anotacoes.setId(Long.parseLong(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
             anotacoes.setComentarios(cursor.getString(cursor.getColumnIndex(COLUMN_COMENTARIOS)));
             anotacoes.setVersiculos(cursor.getString(cursor.getColumnIndex(COLUMN_VERSICULOS)));
             anotacoesList.add(anotacoes);
@@ -120,7 +120,7 @@ public class PersistenceDao extends SQLiteOpenHelper{
         List<Anotacoes> anotacoesList = new ArrayList<Anotacoes>();
         while(cursor.moveToNext()){
             anotacoes = new Anotacoes();
-            anotacoes.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
+            anotacoes.setId(Long.parseLong(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
             anotacoes.setComentarios(cursor.getString(cursor.getColumnIndex(COLUMN_COMENTARIOS)));
             anotacoes.setVersiculos(cursor.getString(cursor.getColumnIndex(COLUMN_VERSICULOS)));
             anotacoesList.add(anotacoes);

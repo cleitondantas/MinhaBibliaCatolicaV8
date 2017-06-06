@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 
-import br.com.cybertronyk.minhabibliacatolicav2.MainActivity;
 import br.com.v8developmentstudio.minhabibliacatolica.R;
 
 /**

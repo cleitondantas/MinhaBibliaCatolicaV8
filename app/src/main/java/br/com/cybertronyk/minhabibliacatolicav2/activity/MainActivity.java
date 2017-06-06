@@ -1,4 +1,4 @@
-package br.com.cybertronyk.minhabibliacatolicav2;
+package br.com.cybertronyk.minhabibliacatolicav2.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,14 +29,11 @@ import  android.view.animation.Animation;
 import static android.view.GestureDetector.SimpleOnGestureListener;
 
 import br.com.v8developmentstudio.minhabibliacatolica.R;
-import br.com.cybertronyk.minhabibliacatolicav2.activity.FavoritosActivity;
-import br.com.cybertronyk.minhabibliacatolicav2.activity.SettingsActivity;
 import br.com.cybertronyk.minhabibliacatolicav2.adapter.MyAdapter;
 import br.com.cybertronyk.minhabibliacatolicav2.adapter.MyExpandableAdapter;
 import br.com.cybertronyk.minhabibliacatolicav2.adapter.MyRecyclerScroll;
 import br.com.cybertronyk.minhabibliacatolicav2.bo.MainBo;
 import br.com.cybertronyk.minhabibliacatolicav2.dao.PersistenceDao;
-import br.com.cybertronyk.minhabibliacatolicav2.activity.AnotacoesActivity;
 import br.com.cybertronyk.minhabibliacatolicav2.vo.ItemData;
 import br.com.cybertronyk.minhabibliacatolicav2.vo.Livro;
 import br.com.cybertronyk.minhabibliacatolicav2.vo.Marcacoes;
@@ -60,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private MainBo mainBo = new MainBo();
     private List<Livro> livroList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.addOnItemTouchListener(this);
         gestureDetector = new GestureDetectorCompat(this, new RecyclerViewOnGestureListener());
 
-       persistenceDao.getDeleteBase(PersistenceDao.DATABASE_NAME);
+      // persistenceDao.getDeleteBase(PersistenceDao.DATABASE_NAME);
         if(!persistenceDao.getExiteBase(PersistenceDao.DATABASE_NAME)) {
             persistenceDao.openDB();
             persistenceDao.copiaBanco(PersistenceDao.DATABASE_NAME);
