@@ -311,12 +311,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fabAnotacao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Handler handler = new Handler();
                 if (adapter.getSelectedItems().size() != 0) {
-
                     moveScroll();
                     setTitle(mainBo.getTitle());
                     showAllFab(fabVoltarCap, fabAvancaCap);
                     hideAllFab(allFloatingActionButtons);
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            Intent intent = new Intent(MainActivity.this, AdicionarAnotacoesActivity.class);
+                            startActivity(intent);
+                            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                        }
+                    }, 400);
                 }
             }
         });
