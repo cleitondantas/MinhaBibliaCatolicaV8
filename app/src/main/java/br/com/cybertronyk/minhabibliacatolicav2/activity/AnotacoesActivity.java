@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.widget.TextView;
 
 import br.com.v8developmentstudio.minhabibliacatolica.R;
 
@@ -14,6 +15,7 @@ public class AnotacoesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_anotacoes);
         CardView  cv = (CardView) findViewById(R.id.id_cv);
+
     }
 
 

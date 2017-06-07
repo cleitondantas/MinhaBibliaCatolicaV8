@@ -28,6 +28,7 @@ import java.util.List;
 import  android.view.animation.Animation;
 import static android.view.GestureDetector.SimpleOnGestureListener;
 
+import br.com.cybertronyk.minhabibliacatolicav2.vo.Constantes;
 import br.com.v8developmentstudio.minhabibliacatolica.R;
 import br.com.cybertronyk.minhabibliacatolicav2.adapter.MyAdapter;
 import br.com.cybertronyk.minhabibliacatolicav2.adapter.MyExpandableAdapter;
@@ -171,8 +172,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-
-
         recyclerView.setOnScrollListener(new MyRecyclerScroll() {
             @Override
             public void show() {
@@ -184,9 +183,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 hideAllAnimateFab(fabVoltarCap, fabAvancaCap);
             }
         });
-
-
-
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -300,11 +296,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View v) {
                 if (adapter.getSelectedItems().size() != 0) {
                     compartilharShare();
-                    moveScroll();
                     setTitle(mainBo.getTitle());
                     showAllFab(fabVoltarCap, fabAvancaCap);
                     hideAllFab(allFloatingActionButtons);
                 }
+
             }
         });
 
@@ -320,10 +316,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     handler.postDelayed(new Runnable() {
                         public void run() {
                             Intent intent = new Intent(MainActivity.this, AdicionarAnotacoesActivity.class);
+                            Bundle dados = new Bundle();
+                            List<Marcacoes> listMarcacoes = mainBo.marcacoesEdit(adapter, idLivro, idCapitulo, null, null, null, true);
+                            Livro livro = livroList.get(livroList.indexOf(new Livro(idLivro)));
+                            String shareTitleVerConcat= livro.getAbreviacao()+" "+ livro.getCapituloList().get(idCapitulo-1).getTitulo()+", ";
+                            String shareAnotacoes = "";
+                            for (Marcacoes item: listMarcacoes){
+                                shareTitleVerConcat = shareTitleVerConcat.concat(item.getIdVersiculo()+".");
+                                shareAnotacoes = shareAnotacoes.concat(System.getProperty("line.separator")+ itemsData[item.getIdVersiculo()-1].toString());
+                            }
+                            dados.putString(Constantes.TITULO_ANOTACOES,shareTitleVerConcat);
+                            dados.putString(Constantes.ANOTACOES,shareAnotacoes);
+                            intent.putExtras(dados);
                             startActivity(intent);
                             overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                         }
-                    }, 400);
+                    }, 200);
                 }
             }
         });
@@ -370,7 +378,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     public void compartilharShare(){
         List<Marcacoes> listMarcacoes = mainBo.marcacoesEdit(adapter, idLivro, idCapitulo, null, null, null, true);
-        ArrayList<String> listVersShare = new ArrayList<>();
+
         Livro livro = livroList.get(livroList.indexOf(new Livro(idLivro)));
         String shareTextVerConcat= livro.getTituloLivro()+" "+ livro.getCapituloList().get(idCapitulo-1).getTitulo()+""+ System.getProperty("line.separator");
 
@@ -382,7 +390,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         sendIntent.putExtra(Intent.EXTRA_TEXT,shareTextVerConcat);
         sendIntent.setType("text/plain");
         startActivity(sendIntent);
-
     }
     public void mudaCapitulo(int idCapitulo){
         persistenceDao.salvarEstadoPreferences(idLivro,idCapitulo);
