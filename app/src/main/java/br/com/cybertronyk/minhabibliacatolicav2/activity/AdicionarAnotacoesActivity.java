@@ -3,14 +3,17 @@ package br.com.cybertronyk.minhabibliacatolicav2.activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.TextView;
 
 import br.com.cybertronyk.minhabibliacatolicav2.vo.Constantes;
 import br.com.v8developmentstudio.minhabibliacatolica.R;
 
 public class AdicionarAnotacoesActivity extends AppCompatActivity {
+    private FloatingActionButton fabAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +30,22 @@ public class AdicionarAnotacoesActivity extends AppCompatActivity {
         textViewTitulo.setText(tituloAnotacoes);
         textViewAnotacoes.setText(anotacoes);
 
+        fabAdd =  (FloatingActionButton) findViewById(R.id.fabAddAnotacoes);
+
+        fabAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                salvarAnotacao();
+            }
+        });
     }
+
+    private void salvarAnotacao(){
+
+
+    }
+
+
 
     @Override
     public void onBackPressed() {

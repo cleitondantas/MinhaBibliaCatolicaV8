@@ -21,8 +21,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -42,7 +40,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="80dp"
         android:layout_marginRight="16dp"
-        android:src="@android:drawable/ic_menu_edit"
+        android:src="@drawable/marca_texto"
         app:backgroundTint="@color/colorPrimary"
         app:borderWidth="0dp"
         app:elevation="6dp"
@@ -100,7 +98,7 @@
         app:borderWidth="0dp"
         app:elevation="10dp"
         app:fabSize="mini" />
-
+<!--
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_sublinhe"
         android:layout_width="wrap_content"
@@ -113,14 +111,14 @@
         app:borderWidth="0dp"
         app:elevation="10dp"
         app:fabSize="mini" />
-
+-->
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_color1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="85dp"
-        android:layout_marginRight="180dp"
+        android:layout_marginRight="130dp"
         android:src="@drawable/marca_texto"
         app:backgroundTint="@color/colorAccent"
         app:borderWidth="0dp"
@@ -133,7 +131,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="85dp"
-        android:layout_marginRight="230dp"
+        android:layout_marginRight="180dp"
         android:src="@drawable/marca_texto"
         app:backgroundTint="@color/verde_florecente"
         app:borderWidth="0dp"
@@ -146,7 +144,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="85dp"
-        android:layout_marginRight="280dp"
+        android:layout_marginRight="230dp"
         android:src="@drawable/marca_texto"
         app:backgroundTint="@color/roxo_florecente"
         app:borderWidth="0dp"
@@ -178,5 +176,7 @@
         app:borderWidth="0dp"
         app:elevation="10dp"
         app:fabSize="mini" />
+
+    <include layout="@layout/content_main" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private GestureDetectorCompat gestureDetector;
     private MyAdapter adapter =null;
     private PersistenceDao persistenceDao = new PersistenceDao(this);
-    private FloatingActionButton fab,fab2, fabFavorito,fabShare,fabAnotacao,fabMark,fabSublinhe,fabMarkColor1,fabMarkColor2,fabMarkColor3,fabVoltarCap,fabAvancaCap;
+    private FloatingActionButton fab,fab2, fabFavorito,fabShare,fabAnotacao,fabMark,fabMarkColor1,fabMarkColor2,fabMarkColor3,fabVoltarCap,fabAvancaCap;
     private FloatingActionButton[] allFloatingActionButtons;
     private Animation animeFloating,animeFloating2;
     private int idLivro, idCapitulo;
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fabShare = (FloatingActionButton) findViewById(R.id.idfab_share);
         fabAnotacao = (FloatingActionButton) findViewById(R.id.fab_anotacao);
         fabMark = (FloatingActionButton) findViewById(R.id.fab_mark);
-        fabSublinhe = (FloatingActionButton) findViewById(R.id.fab_sublinhe);
+
         fabMarkColor1 = (FloatingActionButton) findViewById(R.id.fab_color1);
         fabMarkColor2 = (FloatingActionButton) findViewById(R.id.fab_color2);
         fabMarkColor3 = (FloatingActionButton) findViewById(R.id.fab_color3);
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         animeFloating = AnimationUtils.loadAnimation(this, R.anim.rotate);
         animeFloating2 = AnimationUtils.loadAnimation(this, R.anim.rotate2);
-        allFloatingActionButtons = new FloatingActionButton[]{fab,fab2,fabAnotacao, fabFavorito,fabShare,fabMark,fabSublinhe,fabMarkColor1,fabMarkColor2,fabMarkColor3};
+        allFloatingActionButtons = new FloatingActionButton[]{fab,fab2,fabAnotacao, fabFavorito,fabShare,fabMark,fabMarkColor1,fabMarkColor2,fabMarkColor3};
         //Da um Hide em todos os elementos
         hideAllFab(allFloatingActionButtons);
 
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     fabFavorito.animate().translationY(fab2.getHeight() + 100).setInterpolator(new AccelerateInterpolator(3)).start();
                     fabAnotacao.animate().translationY(fab2.getHeight() + 100).setInterpolator(new AccelerateInterpolator(3)).start();
                     fabShare.animate().translationY(fabFavorito.getHeight() + 100).setInterpolator(new AccelerateInterpolator(3)).start();
-                    hideAllFab(fab2, fabFavorito,fabAnotacao, fabShare, fabMark, fabSublinhe, fabMarkColor1, fabMarkColor2, fabMarkColor3);
+                    hideAllFab(fab2, fabFavorito,fabAnotacao, fabShare, fabMark,  fabMarkColor1, fabMarkColor2, fabMarkColor3);
 
                 }
             }
@@ -211,11 +211,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
                 if (View.GONE == fabMark.getVisibility()) {
-                    showAllFab(fabMark, fabSublinhe, fabMarkColor1, fabMarkColor2, fabMarkColor3);
+                    showAllFab(fabMark,  fabMarkColor1, fabMarkColor2, fabMarkColor3);
                     hideAllFab(fabFavorito,fabAnotacao, fabShare);
                 } else {
                     showAllFab(fabFavorito,fabAnotacao,  fabShare);
-                    hideAllFab(fabMark, fabSublinhe,fabMarkColor1, fabMarkColor2, fabMarkColor3);
+                    hideAllFab(fabMark, fabMarkColor1, fabMarkColor2, fabMarkColor3);
                 }
             }
         });
@@ -278,18 +278,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         });
-        fabSublinhe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (adapter.getSelectedItems().size() != 0) {
-                    realizaMarcacaoSublinhado();
-                    moveScroll();
-                    setTitle(mainBo.getTitle());
-                    showAllFab(fabVoltarCap, fabAvancaCap);
-                    hideAllFab(allFloatingActionButtons);
-                }
-            }
-        });
+//        fabSublinhe.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (adapter.getSelectedItems().size() != 0) {
+//                    realizaMarcacaoSublinhado();
+//                    moveScroll();
+//                    setTitle(mainBo.getTitle());
+//                    showAllFab(fabVoltarCap, fabAvancaCap);
+//                    hideAllFab(allFloatingActionButtons);
+//                }
+//            }
+//        });
 
         fabShare.setOnClickListener(new View.OnClickListener() {
             @Override

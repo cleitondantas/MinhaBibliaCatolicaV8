@@ -1,32 +1,28 @@
 package br.com.cybertronyk.minhabibliacatolicav2.vo;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Property;
+
+import java.util.List;
 
 /**
  * Created by cleiton.dantas on 02/05/2016.
  */
-@Entity
+
 public class Anotacoes {
 
-    @Generated
+
     public  Anotacoes(){
     }
 
-    @Generated
+
     public  Anotacoes(Long id){
         this.id = id;
     }
 
-    @Id(autoincrement = true)
     private Long id;
-
-    @Property(nameInDb = "USERNAME")
+    private int idLivro;
+    private int idNumCap;
+    private List<Versiculo> versiculoList;
     private String versiculos;
-
-
     private String comentarios;
 
 
@@ -52,5 +48,29 @@ public class Anotacoes {
 
     public void setVersiculos(String versiculos) {
         this.versiculos = versiculos;
+    }
+
+    public int getIdLivro() {
+        return idLivro;
+    }
+
+    public int getIdNumCap() {
+        return idNumCap;
+    }
+
+    public void setIdLivro(int idLivro) {
+        this.idLivro = idLivro;
+    }
+
+    public void setIdNumCap(int idNumCap) {
+        this.idNumCap = idNumCap;
+    }
+
+    public void setVersiculoList(List<Versiculo> versiculoList) {
+        this.versiculoList = versiculoList;
+    }
+
+    public List<Versiculo> getVersiculoList() {
+        return versiculoList;
     }
 }

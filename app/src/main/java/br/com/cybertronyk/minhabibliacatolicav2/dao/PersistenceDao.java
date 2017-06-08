@@ -36,6 +36,11 @@ public class PersistenceDao extends SQLiteOpenHelper{
     private static final String COLUMN_ABREVIACAO = "ABREVIACAO";
     private static final String COLUMN_QTDCAPITULOS = "QTDCAPITULOS";
     private static final String TABLE_RELAC_LIVRO_CAP = "TB_RELAC_LIVRO_CAP";
+
+    private static final String TB_RELAC_ANOTACOES_VERSICULOS = "TB_RELAC_ANOTACOES_VERSICULOS";
+    private static final String COLUMN_ID_ANOTACOES = "ID_ANOTACOES";
+    private static final String COLUMN_ID_VERSICULO = "ID_VERSICULO";
+
     private static final String COLUMN_IDLIVRO = "IDLIVRO";
     private static final String COLUMN_IDNUMCAP = "IDNUMCAP";
     private static final String COLUMN_NOME_TABELA = "NOME_TABELA";
@@ -111,6 +116,24 @@ public class PersistenceDao extends SQLiteOpenHelper{
         return anotacoesList;
     }
 
+
+    public void salvarAnotacoes(SQLiteDatabase bancoDados, Anotacoes anotacoes){
+        ContentValues valuesAntacoes = new ContentValues();
+        valuesAntacoes.put(COLUMN_VERSICULOS,anotacoes.getVersiculos());
+        valuesAntacoes.put(COLUMN_COMENTARIOS,anotacoes.getComentarios());
+        valuesAntacoes.put(COLUMN_COMENTARIOS,anotacoes.getComentarios());
+        bancoDados.insert(TABLE_ANOTACOES, null, valuesAntacoes);
+
+        for(Versiculo item: anotacoes.getVersiculoList()){
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_ID_ANOTACOES,anotacoes.getId());
+            values.put(COLUMN_ID_VERSICULO,item.getId());
+            bancoDados.insert(TB_RELAC_ANOTACOES_VERSICULOS, null, values);
+        }
+    }
+
+
+
     /**
      *
      */
@@ -128,14 +151,6 @@ public class PersistenceDao extends SQLiteOpenHelper{
         bancoDados.close();
         return anotacoesList;
     }
-
-    public void salvarAnotacoes(SQLiteDatabase bancoDados, Anotacoes anotacoes){
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_VERSICULOS,anotacoes.getVersiculos());
-        values.put(COLUMN_COMENTARIOS,anotacoes.getComentarios());
-        bancoDados.insert(TABLE_ANOTACOES, null, values);
-    }
-
 
 
     /**
@@ -166,13 +181,14 @@ public class PersistenceDao extends SQLiteOpenHelper{
         Versiculo versiculo =null;
         while(cursor.moveToNext()){
             versiculo = new Versiculo();
-            versiculo.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
+            versiculo.setId(Long.parseLong(cursor.getString(cursor.getColumnIndex(COLUMN_ID))));
             versiculo.setTexto(cursor.getString(cursor.getColumnIndex(COLUMN_VERSICULO)));
             versiculoArrayList.add(versiculo);
         }
         bancoDados.close();
         return versiculoArrayList;
     }
+
 
 
     /**
