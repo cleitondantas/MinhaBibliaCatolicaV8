@@ -570,6 +570,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onTouchEvent(RecyclerView rv, MotionEvent e) {
     }
 
+    @Override
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+    }
+
     public PersistenceDao getPersistenceDao() {
         return persistenceDao;
     }

@@ -4,7 +4,7 @@
     <group  android:checkableBehavior="single" >
         <item
             android:id="@+id/idFavoritos"
-            android:icon="@drawable/abc_btn_rating_star_on_mtrl_alpha"
+            android:icon="@drawable/ic_check"
             android:title="@string/title_favoritos"/>
         <item
             android:id="@+id/idAnotacoes"

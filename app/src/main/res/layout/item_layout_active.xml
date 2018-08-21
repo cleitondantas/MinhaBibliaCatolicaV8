@@ -13,7 +13,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
-        android:background="@color/error_color"
+        android:background="@color/accent"
         android:textColor="@android:color/white"
         android:textIsSelectable="false"
         android:textSize="14sp" />
