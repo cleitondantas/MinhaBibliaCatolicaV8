@@ -18,7 +18,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-
 import br.com.cybertronyk.minhabibliacatolicav2.vo.Anotacoes;
 import br.com.cybertronyk.minhabibliacatolicav2.vo.ItemFavorito;
 import br.com.cybertronyk.minhabibliacatolicav2.vo.Livro;
@@ -54,11 +53,6 @@ public class PersistenceDao extends SQLiteOpenHelper{
     private static final String TABLE_ANOTACOES = "TB_ANOTACOES";
     private static final String COLUMN_VERSICULOS = "VERSICULOS";
     private static final String COLUMN_COMENTARIOS = "COMENTARIOS";
-
-
-
-
-
 
     private Cursor cursor;
     private static PersistenceDao instance;
@@ -158,7 +152,8 @@ public class PersistenceDao extends SQLiteOpenHelper{
      */
     public List<Livro> getLivros(SQLiteDatabase bancoDados){
         ArrayList<Livro> livroArrayList = new ArrayList<>();
-        cursor = bancoDados.query(TABLE_LIVROS, new String[]{COLUMN_ID,COLUMN_TITULO_LIVRO,COLUMN_QTDCAPITULOS,COLUMN_ABREVIACAO}, null,null,null,null,null);
+        String[] colunas = new String[]{COLUMN_ID,COLUMN_TITULO_LIVRO,COLUMN_QTDCAPITULOS,COLUMN_ABREVIACAO};
+        cursor = bancoDados.query(TABLE_LIVROS,colunas, null,null,null,null,null);
         Livro livro;
         while(cursor.moveToNext()){
             livro = new Livro();
@@ -365,7 +360,7 @@ public class PersistenceDao extends SQLiteOpenHelper{
      */
     public SQLiteDatabase openDB(){
         try{
-            bancoDados = contextStatic.openOrCreateDatabase(PersistenceDao.DATABASE_NAME, Context.MODE_WORLD_READABLE, null);
+            bancoDados = contextStatic.openOrCreateDatabase(PersistenceDao.DATABASE_NAME, Context.MODE_PRIVATE, null);
         }catch (Exception e){
         }
         return bancoDados;
@@ -377,7 +372,7 @@ public class PersistenceDao extends SQLiteOpenHelper{
      */
     public SQLiteDatabase openDB(Context context){
         try{
-            bancoDados = context.openOrCreateDatabase(PersistenceDao.DATABASE_NAME, Context.MODE_WORLD_READABLE, null);
+            bancoDados = context.openOrCreateDatabase(PersistenceDao.DATABASE_NAME, Context.MODE_PRIVATE, null);
         }catch (Exception e){
         }
         return bancoDados;

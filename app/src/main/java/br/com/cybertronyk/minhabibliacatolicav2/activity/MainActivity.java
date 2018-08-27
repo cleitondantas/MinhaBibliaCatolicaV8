@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.addOnItemTouchListener(this);
         gestureDetector = new GestureDetectorCompat(this, new RecyclerViewOnGestureListener());
 
+        persistenceDao = new PersistenceDao(this.getApplicationContext());
       // persistenceDao.getDeleteBase(PersistenceDao.DATABASE_NAME);
         if(!persistenceDao.getExiteBase(PersistenceDao.DATABASE_NAME)) {
             persistenceDao.openDB();
